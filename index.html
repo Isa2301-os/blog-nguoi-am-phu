@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Người Âm Phủ - Blog</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
@@ -54,6 +55,15 @@
         </a>
     </main>
 <script>
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on("init", user => {
+    if (!user) {
+      window.netlifyIdentity.on("login", () => {
+        document.location.href = "/admin/";
+      });
+    }
+  });
+}
 document.addEventListener('mousemove', function(e) {
     // Tạo 3 hạt bụi mỗi lần di chuyển chuột để tăng độ dày
     for (let i = 0; i < 3; i++) {
