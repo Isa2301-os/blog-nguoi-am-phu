@@ -1,0 +1,156 @@
+body {
+    font-family: 'Times New Roman', serif;
+    background-color: #e6ded4;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Header & Typography */
+.back-home {
+    text-decoration: none;
+    color: #800000;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 10px;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 5px;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.subtitle {
+    letter-spacing: 2px;
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+.tabs {
+    margin-top: 20px;
+}
+
+.tabs a {
+    text-decoration: none;
+    color: #999;
+    margin: 0 15px;
+    font-size: 1rem;
+}
+
+.tabs a.active {
+    color: #333;
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
+}
+
+.intro-text {
+    font-style: italic;
+    color: #666;
+    margin: 30px 0;
+}
+
+/* Grid Layout cho các ô nội dung */
+.content-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.card {
+    width: 350px;
+}
+
+.card-header-text {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Hiệu ứng khung ảnh  */
+.image-wrapper {
+    background: #ccc; /* Màu nền xám cho khung ngoài */
+    padding: 15px 30px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.image-wrapper img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.image-wrapper:hover img {
+    transform: scale(1.02);
+}
+
+.card-title {
+    margin-top: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 0.95rem;
+}
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Trên điện thoại thì xếp thành 1 cột */
+        gap: 30px;
+    }
+    
+    .main-title {
+        font-size: 20px;
+    }
+
+    .header-section img {
+        aspect-ratio: 16 / 9;
+    }
+}
+/* Đảm bảo Grid luôn chia 2 cột đều nhau */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    align-items: start;
+}
+
+/* Thẻ link bao phủ toàn bộ card mà không làm đổi màu chữ */
+.full-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+}
+
+.card {
+    background: #fff; /* Hoặc màu nền của bạn */
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Hiệu ứng nổi lên khi di chuột */
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 600px) {
+    .content-grid {
+        grid-template-columns: 1fr; /* Chuyển về 1 cột trên mobile */
+    }
+}

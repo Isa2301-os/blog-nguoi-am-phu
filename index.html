@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Người Âm Phủ - Blog</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="header-section">
+        <img src="assets/image/head-banner/banner.jpg" alt="Banner chính">
+    </header>
+
+    <div class="title-container">
+        <h1 class="main-title">NGƯỜI ÂM PHỦ - NGỦ NHÀ ANH KỲ</h1>
+    </div>
+
+    <main class="grid-container">
+        <a href="thanh-nghi.html" class="photo-card-link">
+            <div class="photo-card">
+                <div class="polaroid-frame">
+                    <img src="assets/image/anh1.jpg" alt="Thành Nghị">
+                </div>
+                <div class="caption">THÀNH NGHỊ & GÓC TẢN MẠN</div>
+            </div>
+        </a>
+
+        <a href="phim.html" class="photo-card-link">
+            <div class="photo-card">
+                <div class="polaroid-frame">
+                    <img src="assets/image/anh2.jpg" alt="Phim">
+                </div>
+                <div class="caption">PHIM</div>
+            </div>
+        </a>
+
+        <a href="tap-chi.html" class="photo-card-link">
+            <div class="photo-card">
+                <div class="polaroid-frame">
+                    <img src="assets/image/anh3.jpg" alt="Tạp chí">
+                </div>
+                <div class="caption">TẠP CHÍ</div>
+            </div>
+        </a>
+
+        <a href="show.html" class="photo-card-link">
+            <div class="photo-card">
+                <div class="polaroid-frame">
+                    <img src="assets/image/anh4.jpg" alt="Show">
+                </div>
+                <div class="caption">SHOW</div>
+            </div>
+        </a>
+    </main>
+<script>
+document.addEventListener('mousemove', function(e) {
+    // Tạo 3 hạt bụi mỗi lần di chuyển chuột để tăng độ dày
+    for (let i = 0; i < 3; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        
+        // Vị trí xuất hiện ngẫu nhiên một chút quanh đầu con trỏ
+        const x = e.pageX + (Math.random() * 10 - 5);
+        const y = e.pageY + (Math.random() * 10 - 5);
+        
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        
+        // Kích thước siêu nhỏ để tạo độ mịn (1px đến 3px)
+        const size = Math.random() * 3 + 1;
+        sparkle.style.width = size + 'px';
+        sparkle.style.height = size + 'px';
+        
+        // Tốc độ rơi và hướng bay ngẫu nhiên
+        const destinationX = (Math.random() - 0.5) * 50;
+        const destinationY = Math.random() * 50 + 20;
+        sparkle.style.setProperty('--x', destinationX + 'px');
+        sparkle.style.setProperty('--y', destinationY + 'px');
+
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => {
+            sparkle.remove();
+        }, 800);
+    }
+});
+</script>
+</body>
+</html>

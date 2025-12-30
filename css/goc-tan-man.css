@@ -1,0 +1,113 @@
+/* Cấu trúc chung */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* Header */
+.back-home {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.9em;
+}
+
+h1 {
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* Banner chính */
+/* Banner ảnh chính - Đã tối ưu lại kích thước */
+.banner-wrapper {
+    width: 100%;
+    max-height: 300px; /* Khống chế chiều cao tối đa của banner */
+    margin-bottom: 20px;
+    overflow: hidden;   /* Cắt bỏ phần thừa nếu ảnh quá dài */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.banner-wrapper img {
+    width: 100%;
+    height: 350px;      /* Cố định chiều cao banner */
+    object-fit: cover;  /* Giúp ảnh lấp đầy khung mà không bị méo */
+    object-position: center 20%; /* Ưu tiên hiển thị phần mặt nhân vật */
+    display: block;
+}
+.intro-text {
+    text-align: center;
+    margin: 20px 0;
+    color: #555;
+}
+
+/* BỐ CỤC 3 BÀI NẰM NGANG */
+.post-list {
+    display: flex;
+    flex-direction: row; /* Ép nằm hàng ngang */
+    flex-wrap: nowrap;   /* Không cho phép xuống dòng */
+    gap: 20px;           /* Khoảng cách giữa các bài */
+    justify-content: space-between;
+    margin: 30px 0;
+}
+
+.post-item {
+    flex: 1;             /* Chia đều 3 phần bằng nhau */
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hiệu ứng khi di chuột vào bài viết */
+.post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.post-item img {
+    width: 100%;
+    height: 180px;      /* Cố định chiều cao để 3 ô bằng nhau */
+    object-fit: cover;  /* Ảnh lấp đầy khung mà không bị méo */
+    border-radius: 6px;
+}
+
+.post-item p {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+    font-size: 1em;
+}
+
+/* Phân trang */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.page-link {
+    text-decoration: none;
+    color: #333;
+    padding: 5px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.page-link.active {
+    background-color: #333;
+    color: #fff;
+    border-color: #333;
+}
