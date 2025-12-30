@@ -1,4 +1,4 @@
-/* Cấu trúc chung */
+/* 1. CẤU TRÚC CHUNG */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -14,7 +14,7 @@ body {
     background-color: #fff;
 }
 
-/* Header */
+/* 2. HEADER & TEXT */
 .back-home {
     text-decoration: none;
     color: #666;
@@ -26,71 +26,98 @@ h1 {
     margin: 10px 0;
 }
 
-/* Banner chính */
-/* Banner ảnh chính - Đã tối ưu lại kích thước */
-.banner-wrapper {
-    width: 100%;
-    max-height: 300px; /* Khống chế chiều cao tối đa của banner */
-    margin-bottom: 20px;
-    overflow: hidden;   /* Cắt bỏ phần thừa nếu ảnh quá dài */
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.banner-wrapper img {
-    width: 100%;
-    height: 350px;      /* Cố định chiều cao banner */
-    object-fit: cover;  /* Giúp ảnh lấp đầy khung mà không bị méo */
-    object-position: center 20%; /* Ưu tiên hiển thị phần mặt nhân vật */
-    display: block;
-}
 .intro-text {
     text-align: center;
     margin: 20px 0;
     color: #555;
 }
 
-/* BỐ CỤC 3 BÀI NẰM NGANG */
-.post-list {
+/* 3. BANNER CHÍNH */
+.banner-wrapper {
+    width: 100%;
+    max-height: 300px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.banner-wrapper img {
+    width: 100%;
+    height: 300px; /* Khớp với max-height của wrapper */
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+}
+
+/* 4. HỆ THỐNG BÀI VIẾT TỰ ĐỘNG (THAY CHO .POST-LIST) */
+.grid-container {
     display: flex;
-    flex-direction: row; /* Ép nằm hàng ngang */
-    flex-wrap: nowrap;   /* Không cho phép xuống dòng */
-    gap: 20px;           /* Khoảng cách giữa các bài */
-    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;    /* Cho phép xuống dòng nếu có nhiều hơn 3 bài */
+    gap: 20px;
+    justify-content: flex-start;
     margin: 30px 0;
 }
 
-.post-item {
-    flex: 1;             /* Chia đều 3 phần bằng nhau */
+/* Link bao quanh mỗi bài viết */
+.photo-card-link {
+    flex: 0 0 calc(33.333% - 14px); /* Chia đều 3 bài trên 1 hàng */
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Card bài viết (Thay thế cho .post-item) */
+.photo-card {
     background: #fff;
     border: 1px solid #eee;
     border-radius: 10px;
     padding: 10px;
     text-align: center;
     transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%; /* Đảm bảo các ô cao bằng nhau */
+    box-sizing: border-box;
 }
 
-/* Hiệu ứng khi di chuột vào bài viết */
-.post-item:hover {
+.photo-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-.post-item img {
+/* 5. KIỂM SOÁT ẢNH BÀI VIẾT (QUAN TRỌNG) */
+.polaroid-frame {
     width: 100%;
-    height: 180px;      /* Cố định chiều cao để 3 ô bằng nhau */
-    object-fit: cover;  /* Ảnh lấp đầy khung mà không bị méo */
+    height: 180px;      /* Cố định chiều cao ảnh bài viết */
+    overflow: hidden;   /* Cắt phần ảnh thừa, không cho to hơn khung */
     border-radius: 6px;
+    margin-bottom: 10px;
 }
 
-.post-item p {
-    margin-top: 10px;
+.polaroid-frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* Ép ảnh lấp đầy khung mà không bị méo */
+    display: block;
+}
+
+.caption {
     font-weight: bold;
     color: #333;
-    font-size: 1em;
+    font-size: 0.9em;
+    margin-top: 10px;
+    text-transform: uppercase;
+    
+    /* Đoạn này giúp khống chế 2 dòng tiêu đề không bị lỗi */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Số dòng muốn hiển thị */
+    line-clamp: 2;         /* Dòng tiêu chuẩn để xóa cảnh báo VS Code */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 3em;           /* Giữ độ cao cố định để các ô đều nhau */
 }
 
-/* Phân trang */
+/* 6. PHÂN TRANG */
 .pagination {
     display: flex;
     justify-content: center;
@@ -110,4 +137,11 @@ h1 {
     background-color: #333;
     color: #fff;
     border-color: #333;
+}
+
+/* 7. ĐÁP ỨNG DI ĐỘNG */
+@media (max-width: 768px) {
+    .photo-card-link {
+        flex: 0 0 100%; /* Trên điện thoại hiện 1 bài mỗi hàng */
+    }
 }
