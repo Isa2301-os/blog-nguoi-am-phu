@@ -1,15 +1,33 @@
 backend:
   name: git-gateway
-  branch: main # Đảm bảo trùng với nhánh trên GitHub của bạn
+  branch: main
 
-media_folder: "assets" # Nơi lưu ảnh
-public_folder: "/assets"
+# Ảnh tải lên sẽ vào thư mục assets/image bạn đã có
+media_folder: "assets/image"
+public_folder: "assets/image"
 
 collections:
-  - name: "blog"
-    label: "Bài viết"
-    folder: "/" # Nơi chứa các file .html bài viết của bạn
+  - name: "posts"
+    label: "Tất cả bài viết"
+    # Lưu bài viết vào thư mục assets/content bạn đã có
+    folder: "assets/content" 
     create: true
+    extension: "json"
+    format: "json"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Tiêu đề", name: "title", widget: "string" }
+      - { label: "Ảnh đại diện", name: "image", widget: "image" }
+      - { 
+          label: "Chuyên mục", 
+          name: "category", 
+          widget: "select", 
+          options: [
+            { label: "Góc Tản Mạn", value: "tan-man" },
+            { label: "Thành Nghị", value: "thanh-nghi" },
+            { label: "Phim", value: "phim" },
+            { label: "Tạp chí", value: "tap-chi" },
+            { label: "Show", value: "show" }
+          ] 
+        }
       - { label: "Nội dung", name: "body", widget: "markdown" }
