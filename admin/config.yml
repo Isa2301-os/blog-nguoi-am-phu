@@ -1,0 +1,15 @@
+backend:
+  name: git-gateway
+  branch: main # Đảm bảo trùng với nhánh trên GitHub của bạn
+
+media_folder: "assets" # Nơi lưu ảnh
+public_folder: "/assets"
+
+collections:
+  - name: "blog"
+    label: "Bài viết"
+    folder: "/" # Nơi chứa các file .html bài viết của bạn
+    create: true
+    fields:
+      - { label: "Tiêu đề", name: "title", widget: "string" }
+      - { label: "Nội dung", name: "body", widget: "markdown" }
