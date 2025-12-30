@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết bài viết - Blog Người Âm Phủ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* CSS bổ sung để bài viết trông đẹp hơn */
+        .post-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .post-header img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .post-title {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .post-content {
+            line-height: 1.8;
+            font-size: 1.1em;
+            color: #444;
+            white-space: pre-wrap; /* Giữ nguyên các dòng xuống hàng từ CMS */
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #888;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="post-container">
+        <a href="javascript:history.back()" class="back-btn">← Quay lại</a>
+        <div id="loading">Đang tải nội dung...</div>
+        
+        <article id="post-content-area" style="display: none;">
+            <header class="post-header">
+                <img id="post-image" src="" alt="Ảnh bài viết">
+                <h1 id="post-title" class="post-title"></h1>
+            </header>
+            <div id="post-body" class="post-content"></div>
+        </article>
+    </div>
+
+    <script>
+        async function loadPostDetail() {
+            // 1. Lấy ID bài viết từ thanh địa chỉ (ví dụ: ?id=ten-file.json)
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            if (!postId) {
+                document.getElementById('loading').innerText = "Không tìm thấy bài viết.";
+                return;
+            }
+
+            // 2. Thông tin GitHub của bạn
+            const repoOwner = "Isa2301-os";
+            const repoName = "blog-nguoi-am-phu";
+
+            try {
+                // 3. Gọi API lấy nội dung file từ GitHub
+                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/assets/content/${postId}`);
+                const fileData = await response.json();
+                
+                // 4. Giải mã nội dung Base64 từ GitHub sang JSON
+                const content = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+
+                // 5. Đổ dữ liệu vào giao diện
+                document.getElementById('post-title').innerText = content.title;
+                document.getElementById('post-image').src = content.image;
+                document.getElementById('post-body').innerText = content.body;
+                
+                // Hiển thị bài viết và ẩn dòng "Đang tải"
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('post-content-area').style.display = 'block';
+                document.title = content.title;
+
+            } catch (error) {
+                console.error("Lỗi:", error);
+                document.getElementById('loading').innerText = "Có lỗi xảy ra khi tải bài viết.";
+            }
+        }
+
+        // Khởi chạy hàm khi trang load xong
+        window.onload = loadPostDetail;
+    </script>
+</body>
+</html>
