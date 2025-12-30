@@ -22,8 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         const cardHtml = `
                             <a href="post-detail.html?id=${file.name}" class="photo-card-link">
                                 <div class="photo-card">
-                                    <div class="polaroid-frame">
-                                        <img src="${data.image}" alt="${data.title}">
+                                    <div class="polaroid-frame"> <img src="${data.image}" alt="${data.title}">
                                     </div>
                                     <div class="caption">${data.title.toUpperCase()}</div>
                                 </div>
