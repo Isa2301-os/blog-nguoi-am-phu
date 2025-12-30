@@ -6,40 +6,39 @@
     <title>Chi tiết bài viết - Blog Người Âm Phủ</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* CSS bổ sung để bài viết trông đẹp hơn */
-        .post-container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .post-header img {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .post-title {
-            font-size: 2.5em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .post-content {
-            line-height: 1.8;
-            font-size: 1.1em;
-            color: #444;
-            white-space: pre-wrap; /* Giữ nguyên các dòng xuống hàng từ CMS */
-        }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            text-decoration: none;
-            color: #888;
-            font-weight: bold;
-        }
+        /* Khung chứa nội dung bài viết */
+    .post-container {
+        max-width: 800px; /* Độ rộng vừa mắt để đọc chữ */
+        margin: 40px auto;
+        padding: 30px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+/* KHỐNG CHẾ ẢNH TRONG BÀI VIẾT */
+    #post-image {
+        width: 100%;       /* Ảnh luôn rộng bằng khung chữ */
+        max-height: 500px;  /* Không cho ảnh quá cao gây mỏi mắt khi cuộn */
+        object-fit: cover;  /* Giữ tỉ lệ ảnh đẹp, không bị méo */
+        border-radius: 8px;
+        margin-bottom: 25px;
+        display: block;
+}
+
+    .post-title {
+        font-size: 2.2em;
+        color: #222;
+        margin-bottom: 15px;
+        line-height: 1.3;
+}
+
+    .post-content {
+        font-size: 1.15em;
+        line-height: 1.8;
+        color: #444;
+        white-space: pre-wrap; /* Giữ các đoạn xuống hàng bạn đã viết trong CMS */
+}
     </style>
 </head>
 <body>
