@@ -1,6 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Isa2301-os/blog-nguoi-am-phu
   branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: /auth
 
 # Ảnh tải lên sẽ vào thư mục assets/image
 media_folder: "assets/image"
