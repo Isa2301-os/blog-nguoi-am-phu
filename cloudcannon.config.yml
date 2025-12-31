@@ -30,7 +30,11 @@ _inputs:
   date:
     type: date
   category:
-    type: hidden
+    type: select
+    options:
+      values:
+        - tan-man
+        - phim
   image:
     type: image
   description:
