@@ -28,76 +28,77 @@ function switchTab(fileName, element) {
             console.error(error);
         });
 }
+// --- PHẦN 1: XỬ LÝ CHUYỂN TAB (Dành cho trang tieu-su.html nếu có) ---
+function switchTab(fileName, element) {
+    const contentDiv = document.getElementById("dynamic-content");
+    const tabs = document.querySelectorAll(".tab-btn");
 
-// Tự động load tab Tiểu Sử khi vừa vào trang
-window.onload = () => {
-    const firstTab = document.querySelector(".tab-btn");
-    if(firstTab) switchTab('tieu-su.html', firstTab);
-};
-async function renderMenu() {
-    try {
-        // 1. Lấy dữ liệu từ file settings.json bạn vừa tạo
-        const response = await fetch('assets/content/settings.json');
-        const data = await response.json();
-        const menuContainer = document.getElementById('dynamic-menu');
+    if (!contentDiv) return;
 
-        if (!menuContainer || !data.menu_tree) return;
+    tabs.forEach(tab => tab.classList.remove("active"));
+    element.classList.add("active");
 
-        menuContainer.innerHTML = ''; // Xóa trắng menu cũ nếu có
-        // Thêm vào bên trong hàm renderMenu sau khi fetch data thành công
-        if (data.home_banner) {
-             document.getElementById('main-banner').src = data.home_banner;
-         }
-        // 2. Duyệt qua các mục menu cha (như Thành Nghị, Cộng Đồng)
-        data.menu_tree.forEach(parentItem => {
-            const li = document.createElement('li');
-            li.className = 'menu-parent';
-            
-            let html = `<a href="#">${parentItem.parent} <span class="arrow">▼</span></a>`;
-            
-            // 3. Nếu có các trang con, tạo danh sách ul con
-            if (parentItem.children && parentItem.children.length > 0) {
-                html += `<ul class="sub-menu">`;
-                parentItem.children.forEach(child => {
-                    html += `<li><a href="${child.link}">${child.name}</a></li>`;
-                });
-                html += `</ul>`;
-            }
+    contentDiv.style.opacity = 0;
 
-            li.innerHTML = html;
-            menuContainer.appendChild(li);
+    fetch(fileName)
+        .then(response => {
+            if (!response.ok) throw new Error("Không tìm thấy file " + fileName);
+            return response.text();
+        })
+        .then(data => {
+            setTimeout(() => {
+                contentDiv.innerHTML = data;
+                contentDiv.style.opacity = 1;
+            }, 300);
+        })
+        .catch(error => {
+            contentDiv.innerHTML = "<p>Nội dung đang được cập nhật...</p>";
+            contentDiv.style.opacity = 1;
+            console.error(error);
         });
-    } catch (error) {
-        console.error("Không thể tải menu:", error);
-    }
 }
+
+// --- PHẦN 2: TỰ ĐỘNG LOAD MENU TỪ JSON ---
 async function renderMenu() {
     try {
-        // Gọi file settings.json từ thư mục assets/content
+        // Gọi file settings.json - dùng dấu ./ để an toàn trên GitHub Pages
         const res = await fetch('./assets/content/settings.json');
         if (!res.ok) throw new Error("Không tìm thấy file settings.json");
         
         const data = await res.json();
         const menuContainer = document.getElementById('dynamic-menu');
         
-        if (!menuContainer || !data.menu_tree) return;
+        // Kiểm tra đúng tên thuộc tính trong JSON (ở đây là data.menu)
+        const menuData = data.menu || data.menu_tree; 
+        if (!menuContainer || !menuData) return;
+
+        // Cập nhật Banner nếu có
+        if (data.home_banner && document.getElementById('main-banner')) {
+            document.getElementById('main-banner').src = data.home_banner;
+        }
 
         let menuHtml = '';
-        data.menu_tree.forEach(item => {
-            // Tạo mục cha (ví dụ: Thành Nghị)
-            menuHtml += `
-                <li class="menu-item has-children">
-                    <a href="#">${item.parent} <span class="arrow">▼</span></a>
-                    <ul class="sub-menu">`;
-            
-            // Tạo các mục con (ví dụ: Góc Tản Mạn, Phim)
-            if (item.children) {
-                item.children.forEach(child => {
-                    menuHtml += `<li><a href="${child.link}">${child.name}</a></li>`;
+        menuData.forEach(item => {
+            // Sửa lỗi dấu "/" ở đầu link
+            const mainLink = item.link ? (item.link.startsWith('/') ? item.link.substring(1) : item.link) : "#";
+            const name = item.name || item.parent;
+
+            if (item.sub_menu || item.children) {
+                const children = item.sub_menu || item.children;
+                menuHtml += `
+                    <li class="menu-item has-children">
+                        <a href="${mainLink}">${name} <span class="arrow">▼</span></a>
+                        <ul class="sub-menu">`;
+                
+                children.forEach(child => {
+                    const childLink = child.link.startsWith('/') ? child.link.substring(1) : child.link;
+                    menuHtml += `<li><a href="${childLink}">${child.name}</a></li>`;
                 });
+                
+                menuHtml += `</ul></li>`;
+            } else {
+                menuHtml += `<li class="menu-item"><a href="${mainLink}">${name}</a></li>`;
             }
-            
-            menuHtml += `</ul></li>`;
         });
         
         menuContainer.innerHTML = menuHtml;
@@ -106,5 +107,11 @@ async function renderMenu() {
     }
 }
 
-// Chạy hàm ngay khi trang tải xong
-document.addEventListener('DOMContentLoaded', renderMenu);
+// --- PHẦN 3: KHỞI TẠO KHI TRANG LOAD XONG ---
+document.addEventListener('DOMContentLoaded', () => {
+    renderMenu();
+
+    // Nếu trang có tab-btn thì load tab đầu tiên
+    const firstTab = document.querySelector(".tab-btn");
+    if(firstTab) switchTab('tieu-su.html', firstTab);
+});
