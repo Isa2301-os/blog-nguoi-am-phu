@@ -2,7 +2,12 @@ backend:
   name: github
   repo: Isa2301-os/blog-nguoi-am-phu
   branch: main
-  base_url: https://api.netlify.com
+  backend:
+  name: github
+  repo: Isa2301-os/blog-nguoi-am-phu
+  branch: main
+  # Xóa bỏ các dòng liên quan đến netlify và thay bằng dòng dưới đây
+  proxy_url: https://static-cms-auth.netlify.app/.netlify/functions/auth
   auth_endpoint: /auth
 
 # Ảnh tải lên sẽ vào thư mục assets/image
