@@ -3,32 +3,25 @@ paths:
   static: /
 
 collections_config:
-  # Cấu hình cho Góc Tản Mạn
   posts:
     path: assets/content
     name: Góc Tản Mạn
     icon: auto_stories
     extension: json
-    output: false
-    # Giúp nút Add biết tạo file vào đâu và đặt tên theo tiêu đề
     create:
       path: "assets/content/{slug}.json"
-    # Lọc danh sách chỉ hiện bài tản mạn
     filter:
       base:
         category: tan-man
-    # Sử dụng file mẫu khi nhấn nút Add
     schemas:
       default:
-        path: assets/content/template-tan-man.json
+        path: "assets/content/template-tan-man.json"
 
-  # Cấu hình cho mục Phim
   phim:
     path: assets/content
     name: Review Phim
     icon: movie
     extension: json
-    output: false
     create:
       path: "assets/content/{slug}.json"
     filter:
@@ -36,24 +29,15 @@ collections_config:
         category: phim
     schemas:
       default:
-        path: assets/content/template-phim.json
+        path: "assets/content/template-phim.json"
 
-  settings:
-    path: assets/content/settings.json
-    name: Cấu hình Web
-    icon: settings
-
-# Định nghĩa các ô nhập liệu
 _inputs:
   title:
     type: text
   category:
     type: select
     options:
-      values:
-        - tan-man
-        - phim
-        - thanh-nghi
+      values: [tan-man, phim, thanh-nghi]
   image:
     type: image
   body:
