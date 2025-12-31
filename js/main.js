@@ -1,5 +1,5 @@
-let allPosts = []; // Lưu trữ toàn bộ bài viết sau khi lấy về
-const postsPerPage = 5; // Số bài mỗi trang
+let allPosts = []; 
+const postsPerPage = 5; 
 
 async function loadCategoryPosts(categoryName, page = 1) {
     const repoOwner = "Isa2301-os";
@@ -7,19 +7,21 @@ async function loadCategoryPosts(categoryName, page = 1) {
     const folderPath = "assets/content";
 
     try {
-        // Chỉ fetch dữ liệu từ GitHub ở lần đầu tiên
         if (allPosts.length === 0) {
             const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
             const files = await response.json();
             
-            // Lọc chỉ lấy file .json và đảo ngược để bài mới lên đầu
+            // Kiểm tra nếu là mảng dữ liệu hợp lệ
+            if (!Array.isArray(files)) return;
+
             const jsonFiles = files.filter(f => f.name.endsWith('.json')).reverse();
             
-            // Lấy nội dung chi tiết của từng file
             for (const file of jsonFiles) {
                 const res = await fetch(file.download_url);
                 const data = await res.json();
-                if (data.category === categoryName) {
+                
+                // So sánh category không phân biệt chữ hoa chữ thường
+                if (data.category && data.category.toLowerCase() === categoryName.toLowerCase()) {
                     allPosts.push({ ...data, fileName: file.name });
                 }
             }
@@ -35,14 +37,15 @@ async function loadCategoryPosts(categoryName, page = 1) {
 
 function displayPosts(page) {
     const container = document.querySelector('.grid-container');
+    if (!container) return;
     container.innerHTML = '';
 
-    // Tính toán vị trí bài viết bắt đầu và kết thúc của trang hiện tại
     const startIndex = (page - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
     paginatedPosts.forEach(post => {
+        // Lưu ý: post.title.toUpperCase() sẽ làm tiêu đề viết hoa hết
         const cardHtml = `
             <a href="post-detail.html?id=${post.fileName}" class="photo-card-link">
                 <div class="photo-card">
@@ -50,7 +53,7 @@ function displayPosts(page) {
                         <img src="${post.image}" alt="${post.title}">
                     </div>
                     <div class="caption-container">
-                        <div class="caption">${post.title.toUpperCase()}</div>
+                        <div class="caption">${post.title}</div>
                         <div class="post-date">${post.date || ''}</div>
                     </div>
                 </div>
@@ -61,9 +64,11 @@ function displayPosts(page) {
 
 function setupPagination(currentPage) {
     const paginationContainer = document.querySelector('.pagination');
+    if (!paginationContainer) return;
     paginationContainer.innerHTML = '';
 
     const totalPages = Math.ceil(allPosts.length / postsPerPage);
+    if (totalPages <= 1) return; // Không hiện phân trang nếu chỉ có 1 trang
 
     for (let i = 1; i <= totalPages; i++) {
         const link = document.createElement('a');
@@ -75,14 +80,14 @@ function setupPagination(currentPage) {
             e.preventDefault();
             displayPosts(i);
             setupPagination(i);
-            window.scrollTo(0, 0); // Cuộn lên đầu trang khi chuyển trang
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn mượt lên đầu
         });
         
         paginationContainer.appendChild(link);
     }
 }
 
-// Gọi hàm khi trang tải xong
 document.addEventListener("DOMContentLoaded", () => {
+    // Tự động nhận diện category dựa trên tên file HTML hoặc mặc định 'tan-man'
     loadCategoryPosts('tan-man');
 });

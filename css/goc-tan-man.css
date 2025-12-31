@@ -1,6 +1,6 @@
 /* 1. CẤU TRÚC CHUNG */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
@@ -19,24 +19,31 @@ body {
     text-decoration: none;
     color: #666;
     font-size: 0.9em;
+    transition: color 0.3s;
+}
+
+.back-home:hover {
+    color: #000;
 }
 
 h1 {
     text-align: center;
     margin: 10px 0;
+    letter-spacing: 1px;
 }
 
 .intro-text {
     text-align: center;
     margin: 20px 0;
     color: #555;
+    font-style: italic;
 }
 
 /* 3. BANNER CHÍNH */
 .banner-wrapper {
     width: 100%;
     max-height: 300px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -44,20 +51,20 @@ h1 {
 
 .banner-wrapper img {
     width: 100%;
-    height: 300px; /* Khớp với max-height của wrapper */
+    height: 300px;
     object-fit: cover;
     object-position: center 20%;
     display: block;
 }
-/* 4. HỆ THỐNG BÀI VIẾT DẠNG LIST (1 BÀI/HÀNG) */
+
+/* 4. HỆ THỐNG DANH SÁCH BÀI VIẾT (GIAO DIỆN LIST) */
 .grid-container {
     display: flex;
-    flex-direction: column; /* Xếp theo hàng dọc */
+    flex-direction: column;
     gap: 15px;
     margin: 30px 0;
 }
 
-/* Link bao quanh mỗi bài viết */
 .photo-card-link {
     width: 100%;
     text-decoration: none;
@@ -65,29 +72,26 @@ h1 {
     display: block;
 }
 
-/* Card bài viết dạng ngang */
 .photo-card {
     background: #fff;
-    border-bottom: 1px solid #eee; /* Đường kẻ phân cách mảnh */
+    border-bottom: 1px solid #eee;
     padding: 15px;
-    display: flex;       /* Cho ảnh và chữ nằm cạnh nhau */
-    align-items: center; /* Căn giữa theo chiều dọc */
-    gap: 20px;           /* Khoảng cách giữa ảnh và chữ */
+    display: flex;
+    align-items: center;
+    gap: 20px;
     transition: background 0.3s;
 }
 
 .photo-card:hover {
     background: #fdfdfd;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
 }
 
-/* 5. KIỂM SOÁT ẢNH NHỎ BÊN TRÁI */
+/* 5. KIỂM SOÁT ẢNH ĐẠI DIỆN NHỎ */
 .polaroid-frame {
-    flex: 0 0 120px;    /* Cố định chiều rộng ảnh nhỏ 120px */
-    height: 80px;       /* Cố định chiều cao ảnh nhỏ */
+    flex: 0 0 120px;
+    height: 80px;
     overflow: hidden;
     border-radius: 6px;
-    margin-bottom: 0;   /* Bỏ margin cũ */
 }
 
 .polaroid-frame img {
@@ -97,30 +101,60 @@ h1 {
     display: block;
 }
 
+/* 6. PHẦN CHỮ BÊN CẠNH ẢNH (QUAN TRỌNG) */
 .caption-container {
-    flex: 1;            /* Phần chữ chiếm hết không gian còn lại */
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    text-align: left;   /* Căn trái toàn bộ chữ */
 }
 
 .caption {
-    font-weight: bold;
-    color: #333;
-    font-size: 1em;
+    font-weight: 700;
+    font-size: 1.1em;
     margin: 0;
-    text-transform: uppercase;
+    text-transform: none; /* Bỏ uppercase cho tự nhiên */
+    line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: auto;       /* Để cao tự động theo nội dung */
-    line-height: 1.4;
+    color: #333;
 }
-/* 6. PHÂN TRANG */
-/* 6. PHÂN TRANG */
+.post-date {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* 7. ĐỊNH DẠNG NỘI DUNG BÊN TRONG BÀI VIẾT (SAU KHI NHẤN XEM CHI TIẾT) */
+.post-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.8; /* Dãn dòng lý tưởng cho văn bản dài */
+    letter-spacing: 0.3px;
+    color: #333;
+    text-align: justify;
+    font-size: 1.1em;
+}
+
+.post-content p {
+    margin-bottom: 25px;
+    white-space: pre-line;
+}
+
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 35px auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* 8. PHÂN TRANG */
 .pagination {
     display: flex;
     justify-content: center;
@@ -144,13 +178,24 @@ h1 {
 }
 
 .page-link.active {
-    background-color: #333; /* Màu tối cho trang hiện tại */
+    background-color: #333;
     color: #fff;
     border-color: #333;
 }
-/* 7. ĐÁP ỨNG DI ĐỘNG */
+
+/* 9. ĐÁP ỨNG DI ĐỘNG */
 @media (max-width: 768px) {
-    .photo-card-link {
-        flex: 0 0 100%; /* Trên điện thoại hiện 1 bài mỗi hàng */
+    .photo-card {
+        gap: 12px;
+        padding: 10px;
+    }
+    
+    .polaroid-frame {
+        flex: 0 0 100px;
+        height: 70px;
+    }
+    
+    .caption {
+        font-size: 1em;
     }
 }

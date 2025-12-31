@@ -1,0 +1,41 @@
+{
+  "home_banner": "/assets/image/image2.jpg",
+  "tan_man_banner": "/assets/headbaner/tan-man.jpg",
+  "phim_banner": "/assets/head-baner/phim.jpg",
+  "menu_tree": [
+    {
+      "parent": "Thành Nghị",
+      "children": [
+        {
+          "name": "Góc Tản Mạn",
+          "link": "goc-tan-man.html"
+        },
+        {
+          "name": "Phim",
+          "link": "phim.html"
+        },
+        {
+          "name": "Tạp Chí",
+          "link": "tap-chi.html"
+        },
+        {
+          "name": "Show",
+          "link": "show.html"
+        }
+      ]
+    },
+    {
+      "parent": "Cộng Đồng",
+      "children": [
+        {
+          "name": "Fanpage Facebook",
+          "link": "https://facebook.com/yourpage"
+        },
+        {
+          "name": "Nhóm Thảo Luận",
+          "link": "#"
+        }
+      ]
+    }
+  ]
+}
