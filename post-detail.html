@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết bài viết - Blog Người Âm Phủ</title>
+    <title>Đang tải bài viết...</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Giữ nguyên CSS của bạn và thêm hiệu ứng mượt mà */
         .post-container {
             max-width: 800px;
             margin: 40px auto;
@@ -13,48 +14,20 @@
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: opacity 0.5s ease;
         }
-
-        /* Ảnh đại diện chính đầu bài */
         #post-image {
             width: 100%;
             max-height: 500px;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 25px;
-            display: block;
+            display: none; /* Chỉ hiện khi đã load được ảnh */
         }
-
-        .post-title {
-            font-size: 2.2em;
-            color: #222;
-            margin-bottom: 15px;
-            line-height: 1.3;
-        }
-
-        .post-content {
-            font-size: 1.15em;
-            line-height: 1.8;
-            color: #444;
-            /* Đã xóa white-space: pre-wrap để Markdown tự xử lý đoạn văn */
-        }
-
-        /* Định dạng ảnh chèn thêm vào giữa nội dung bài viết */
-        .post-content img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 30px auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-
-        .back-btn {
-            text-decoration: none;
-            color: #666;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
+        .post-title { font-size: 2.2em; color: #222; margin-bottom: 15px; }
+        .post-content { font-size: 1.15em; line-height: 1.8; color: #444; }
+        .post-content img { max-width: 100%; border-radius: 8px; margin: 20px 0; }
+        #loading { text-align: center; padding: 50px; font-style: italic; color: #888; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -83,33 +56,44 @@
                 return;
             }
 
-            const repoOwner = "Isa2301-os";
-            const repoName = "blog-nguoi-am-phu";
-
             try {
-                const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/assets/content/${postId}`);
-                const fileData = await response.json();
+                // TỐI ƯU 1: Fetch trực tiếp file JSON (Nhanh hơn, không bị giới hạn API)
+                const response = await fetch(`./assets/content/${decodeURIComponent(postId)}`);
+                if (!response.ok) throw new Error("Không thể tải file JSON");
                 
-                // Giải mã nội dung từ GitHub
-                const content = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                const content = await response.json();
 
-                // 1. Đổ Tiêu đề và Ảnh đại diện
+                // TỐI ƯU 2: Xử lý đường dẫn ảnh tự động (Fix lỗi ảnh bạn gặp)
+                const postImg = document.getElementById('post-image');
+                if (content.image) {
+                    let imgPath = content.image;
+                    if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
+                    // Ép về đúng thư mục ảnh chính
+                    imgPath = imgPath.replace('content/assets/image/', 'assets/image/');
+                    
+                    postImg.src = imgPath;
+                    postImg.style.display = 'block';
+                }
+
+                // TỐI ƯU 3: Đổ dữ liệu
                 document.getElementById('post-title').innerText = content.title;
-                document.getElementById('post-image').src = content.image;
-                
-                // 2. CHUYỂN ĐỔI MARKDOWN SANG HTML (Quan trọng nhất)
+                document.title = content.title + " - Blog Người Âm Phủ";
+
                 if (content.body) {
+                    // Sử dụng marked để render Markdown
                     document.getElementById('post-body').innerHTML = marked.parse(content.body);
                 }
                 
-                // Hiển thị nội dung
+                // Hiển thị giao diện
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('post-content-area').style.display = 'block';
-                document.title = content.title;
 
             } catch (error) {
                 console.error("Lỗi:", error);
-                document.getElementById('loading').innerText = "Có lỗi xảy ra khi tải bài viết.";
+                document.getElementById('loading').innerHTML = `
+                    <p>Có lỗi xảy ra khi tải bài viết.</p>
+                    <small>${error.message}</small>
+                `;
             }
         }
 
