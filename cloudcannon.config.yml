@@ -1,0 +1,23 @@
+paths:
+  uploads: assets/image
+  static: /
+
+collections_config:
+  posts:
+    path: assets/content
+    name: Bài viết Blog
+    icon: library_books
+    output: false
+    # Cấu hình để CloudCannon hiểu file .json
+    extension: json
+  settings:
+    path: assets/content/settings.json
+    name: Cấu hình Web
+    icon: settings
+
+# Giúp trình soạn thảo hiển thị đẹp hơn
+_inputs:
+  body:
+    type: markdown
+  image:
+    type: image
