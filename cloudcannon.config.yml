@@ -3,26 +3,35 @@ paths:
   static: /
 
 collections_config:
-  # Chỉ giữ lại mục Góc Tản Mạn
+  # 1. Mục chỉnh sửa Menu, Fanpage, Cộng đồng
+  settings:
+    path: assets/content/settings.json
+    name: Cấu hình Website
+    icon: settings
+    parse_601: true
+
+  # 2. Mục viết bài Góc Tản Mạn
   posts:
     path: assets/content
     name: Góc Tản Mạn
     icon: auto_stories
     extension: json
     output: false
-    # Cách đặt tên file khi nhấn nút ADD
     create:
       path: "assets/content/{slug}.json"
-    # Chỉ hiển thị những bài có nhãn tan-man
     filter:
       base:
         category: tan-man
-    # Đường dẫn file mẫu (Lưu ý: Không có dấu / ở đầu)
     schemas:
       default:
         path: assets/content/template-tan-man.json
+    # Tự động hiển thị ảnh bài viết trong danh sách cho đẹp
+    config:
+      card:
+        title: title
+        image: image
+        subtext: category
 
-# Cấu hình ô nhập liệu để tránh lỗi Missing Key
 _inputs:
   title:
     type: text

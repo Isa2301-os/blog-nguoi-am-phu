@@ -1,0 +1,19 @@
+{
+  "site_name": "Người Âm Phủ Blog",
+  "menu": [
+    {
+      "name": "Trang chủ",
+      "link": "/index.html",
+      "sub_menu": [
+        { "name": "Thành Nghị", "link": "/tieu-su.html" },
+        { "name": "Góc Tản Mạn", "link": "/goc-tan-man.html" }
+      ]
+    },
+    { "name": "Phim", "link": "/phim.html" },
+    { "name": "Tạp Chí", "link": "/tap-chi.html" },
+    { "name": "Show", "link": "/show.html" }
+  ],
+  "social": {
+    "fanpage": "https://facebook.com/duong-dan-cua-ban"
+  }
+}
