@@ -2,7 +2,7 @@
   "site_name": "Người Âm Phủ Blog",
   "menu": [
     {
-      "name": "Trang chủ",
+      "name": "Thành Nghị & Tản Mạn",
       "link": "/index.html",
       "sub_menu": [
         { "name": "Thành Nghị", "link": "/tieu-su.html" },
