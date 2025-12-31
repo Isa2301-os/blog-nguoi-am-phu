@@ -34,7 +34,7 @@ collections:
 
   - name: "posts"
     label: "Tất cả bài viết"
-    folder: "assets/content" 
+    folder: "assets/content"
     create: true
     extension: "json"
     format: "json"
