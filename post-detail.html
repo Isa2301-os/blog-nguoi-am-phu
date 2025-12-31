@@ -45,59 +45,78 @@
             <div id="post-body" class="post-content"></div>
         </article>
     </div>
-
+    
     <script>
         async function loadPostDetail() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const postId = urlParams.get('id');
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
 
-            if (!postId) {
-                document.getElementById('loading').innerText = "Không tìm thấy bài viết.";
-                return;
-            }
-
-            try {
-                // TỐI ƯU 1: Fetch trực tiếp file JSON (Nhanh hơn, không bị giới hạn API)
-                const response = await fetch(`./assets/content/${decodeURIComponent(postId)}`);
-                if (!response.ok) throw new Error("Không thể tải file JSON");
-                
-                const content = await response.json();
-
-                // TỐI ƯU 2: Xử lý đường dẫn ảnh tự động (Fix lỗi ảnh bạn gặp)
-                const postImg = document.getElementById('post-image');
-                if (content.image) {
-                    let imgPath = content.image;
-                    if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
-                    // Ép về đúng thư mục ảnh chính
-                    imgPath = imgPath.replace('content/assets/image/', 'assets/image/');
-                    
-                    postImg.src = imgPath;
-                    postImg.style.display = 'block';
-                }
-
-                // TỐI ƯU 3: Đổ dữ liệu
-                document.getElementById('post-title').innerText = content.title;
-                document.title = content.title + " - Blog Người Âm Phủ";
-
-                if (content.body) {
-                    // Sử dụng marked để render Markdown
-                    document.getElementById('post-body').innerHTML = marked.parse(content.body);
-                }
-                
-                // Hiển thị giao diện
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('post-content-area').style.display = 'block';
-
-            } catch (error) {
-                console.error("Lỗi:", error);
-                document.getElementById('loading').innerHTML = `
-                    <p>Có lỗi xảy ra khi tải bài viết.</p>
-                    <small>${error.message}</small>
-                `;
-            }
+        // Kiểm tra nếu không có tham số id trên URL
+        if (!postId) {
+            document.getElementById('loading').innerText = "Không tìm thấy bài viết.";
+            return;
         }
 
-        window.onload = loadPostDetail;
+        try {
+            // Giải mã ID bài viết để tránh lỗi ký tự đặc biệt/khoảng trắng
+            const decodedId = decodeURIComponent(postId);
+            
+            // TỐI ƯU: Truy cập trực tiếp file JSON trong thư mục content
+            const response = await fetch(`./assets/content/${decodedId}`);
+            if (!response.ok) throw new Error("Không thể tải dữ liệu bài viết.");
+            
+            const content = await response.json();
+            const postImg = document.getElementById('post-image');
+
+            // 1. XỬ LÝ ẢNH (Dọn dẹp các đường dẫn sai lệch)
+            if (content.image) {
+                let imgPath = content.image;
+                
+                // Loại bỏ dấu gạch chéo ở đầu nếu có
+                if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
+                
+                // FIX LỖI ĐƯỜNG DẪN LỒNG NHAU:
+                // Nếu đường dẫn chứa 'image/', ta lấy phần tên file cuối cùng và ghép vào assets/image/
+                if (imgPath.includes('image/')) {
+                    const parts = imgPath.split('image/');
+                    imgPath = 'assets/image/' + parts[parts.length - 1];
+                }
+                
+                postImg.src = imgPath;
+                postImg.style.display = 'block';
+                
+                // Nếu ảnh vẫn không tồn tại (lỗi 404), ẩn khung ảnh đi cho đẹp
+                postImg.onerror = function() { this.style.display = 'none'; };
+            }
+
+            // 2. ĐỔ TIÊU ĐỀ
+            document.getElementById('post-title').innerText = content.title || "Chưa có tiêu đề";
+            document.title = (content.title || "Bài viết") + " - Blog Người Âm Phủ";
+
+            // 3. XỬ LÝ NỘI DUNG (BODY)
+            const bodyContainer = document.getElementById('post-body');
+            if (content.body) {
+                // Sử dụng thư viện marked (đã khai báo ở <head>) để chuyển Markdown sang HTML
+                bodyContainer.innerHTML = marked.parse(content.body);
+            } else {
+                bodyContainer.innerHTML = "<p>Nội dung đang được cập nhật...</p>";
+            }
+            
+            // Ẩn thông báo loading và hiển thị nội dung bài viết
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('post-content-area').style.display = 'block';
+
+        } catch (error) {
+            console.error("Lỗi chi tiết:", error);
+            document.getElementById('loading').innerHTML = `
+                <p>Có lỗi xảy ra khi tải bài viết.</p>
+                <small style="color: red;">${error.message}</small>
+            `;
+        }
+    }
+
+    // Gọi hàm thực thi ngay khi trang web tải xong
+    window.onload = loadPostDetail;
     </script>
 </body>
 </html>
