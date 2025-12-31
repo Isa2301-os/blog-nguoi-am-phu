@@ -24,7 +24,6 @@ collections_config:
 
 # Cấu hình ô nhập liệu để tránh lỗi Missing Key
 _inputs:
-  _inputs:
   title:
     type: text
   date:
