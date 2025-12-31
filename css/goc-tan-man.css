@@ -49,96 +49,105 @@ h1 {
     object-position: center 20%;
     display: block;
 }
-
-/* 4. HỆ THỐNG BÀI VIẾT TỰ ĐỘNG (THAY CHO .POST-LIST) */
+/* 4. HỆ THỐNG BÀI VIẾT DẠNG LIST (1 BÀI/HÀNG) */
 .grid-container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;    /* Cho phép xuống dòng nếu có nhiều hơn 3 bài */
-    gap: 20px;
-    justify-content: flex-start;
+    flex-direction: column; /* Xếp theo hàng dọc */
+    gap: 15px;
     margin: 30px 0;
 }
 
 /* Link bao quanh mỗi bài viết */
 .photo-card-link {
-    flex: 0 0 calc(33.333% - 14px); /* Chia đều 3 bài trên 1 hàng */
+    width: 100%;
     text-decoration: none;
     color: inherit;
     display: block;
 }
 
-/* Card bài viết (Thay thế cho .post-item) */
+/* Card bài viết dạng ngang */
 .photo-card {
     background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    transition: transform 0.3s, box-shadow 0.3s;
-    height: 100%; /* Đảm bảo các ô cao bằng nhau */
-    box-sizing: border-box;
+    border-bottom: 1px solid #eee; /* Đường kẻ phân cách mảnh */
+    padding: 15px;
+    display: flex;       /* Cho ảnh và chữ nằm cạnh nhau */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 20px;           /* Khoảng cách giữa ảnh và chữ */
+    transition: background 0.3s;
 }
 
 .photo-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: #fdfdfd;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
 }
 
-/* 5. KIỂM SOÁT ẢNH BÀI VIẾT (QUAN TRỌNG) */
+/* 5. KIỂM SOÁT ẢNH NHỎ BÊN TRÁI */
 .polaroid-frame {
-    width: 100%;
-    height: 180px;      /* Cố định chiều cao ảnh bài viết */
-    overflow: hidden;   /* Cắt phần ảnh thừa, không cho to hơn khung */
+    flex: 0 0 120px;    /* Cố định chiều rộng ảnh nhỏ 120px */
+    height: 80px;       /* Cố định chiều cao ảnh nhỏ */
+    overflow: hidden;
     border-radius: 6px;
-    margin-bottom: 10px;
+    margin-bottom: 0;   /* Bỏ margin cũ */
 }
 
 .polaroid-frame img {
     width: 100%;
     height: 100%;
-    object-fit: cover;  /* Ép ảnh lấp đầy khung mà không bị méo */
+    object-fit: cover;
     display: block;
+}
+
+.caption-container {
+    flex: 1;            /* Phần chữ chiếm hết không gian còn lại */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;   /* Căn trái toàn bộ chữ */
 }
 
 .caption {
     font-weight: bold;
     color: #333;
-    font-size: 0.9em;
-    margin-top: 10px;
+    font-size: 1em;
+    margin: 0;
     text-transform: uppercase;
-    
-    /* Đoạn này giúp khống chế 2 dòng tiêu đề không bị lỗi */
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* Số dòng muốn hiển thị */
-    line-clamp: 2;         /* Dòng tiêu chuẩn để xóa cảnh báo VS Code */
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 3em;           /* Giữ độ cao cố định để các ô đều nhau */
+    height: auto;       /* Để cao tự động theo nội dung */
+    line-height: 1.4;
 }
-
+/* 6. PHÂN TRANG */
 /* 6. PHÂN TRANG */
 .pagination {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 20px;
+    margin: 40px 0;
 }
 
 .page-link {
-    text-decoration: none;
-    color: #333;
-    padding: 5px 12px;
+    padding: 8px 16px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.page-link:hover {
+    background-color: #f4f4f4;
+    border-color: #bbb;
 }
 
 .page-link.active {
-    background-color: #333;
+    background-color: #333; /* Màu tối cho trang hiện tại */
     color: #fff;
     border-color: #333;
 }
-
 /* 7. ĐÁP ỨNG DI ĐỘNG */
 @media (max-width: 768px) {
     .photo-card-link {
