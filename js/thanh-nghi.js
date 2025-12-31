@@ -44,7 +44,10 @@ async function renderMenu() {
         if (!menuContainer || !data.menu_tree) return;
 
         menuContainer.innerHTML = ''; // Xóa trắng menu cũ nếu có
-
+        // Thêm vào bên trong hàm renderMenu sau khi fetch data thành công
+        if (data.home_banner) {
+             document.getElementById('main-banner').src = data.home_banner;
+         }
         // 2. Duyệt qua các mục menu cha (như Thành Nghị, Cộng Đồng)
         data.menu_tree.forEach(parentItem => {
             const li = document.createElement('li');
