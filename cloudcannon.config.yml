@@ -3,21 +3,58 @@ paths:
   static: /
 
 collections_config:
+  # Cấu hình cho Góc Tản Mạn
   posts:
     path: assets/content
-    name: Bài viết Blog
-    icon: library_books
-    output: false
-    # Cấu hình để CloudCannon hiểu file .json
+    name: Góc Tản Mạn
+    icon: auto_stories
     extension: json
+    output: false
+    # Giúp nút Add biết tạo file vào đâu và đặt tên theo tiêu đề
+    create:
+      path: "assets/content/{slug}.json"
+    # Lọc danh sách chỉ hiện bài tản mạn
+    filter:
+      base:
+        category: tan-man
+    # Sử dụng file mẫu khi nhấn nút Add
+    schemas:
+      default:
+        path: assets/content/template-tan-man.json
+
+  # Cấu hình cho mục Phim
+  phim:
+    path: assets/content
+    name: Review Phim
+    icon: movie
+    extension: json
+    output: false
+    create:
+      path: "assets/content/{slug}.json"
+    filter:
+      base:
+        category: phim
+    schemas:
+      default:
+        path: assets/content/template-phim.json
+
   settings:
     path: assets/content/settings.json
     name: Cấu hình Web
     icon: settings
 
-# Giúp trình soạn thảo hiển thị đẹp hơn
+# Định nghĩa các ô nhập liệu
 _inputs:
-  body:
-    type: markdown
+  title:
+    type: text
+  category:
+    type: select
+    options:
+      values:
+        - tan-man
+        - phim
+        - thanh-nghi
   image:
     type: image
+  body:
+    type: markdown
