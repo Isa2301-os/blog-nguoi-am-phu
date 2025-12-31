@@ -2,14 +2,38 @@ backend:
   name: git-gateway
   branch: main
 
-# Ảnh tải lên sẽ vào thư mục assets/image bạn đã có
+# Ảnh tải lên sẽ vào thư mục assets/image
 media_folder: "assets/image"
 public_folder: "assets/image"
 
 collections:
+  # --- PHẦN THÊM MỚI: Cấu hình Menu và Banner ---
+  - name: "settings"
+    label: "Cấu hình Website"
+    delete: false # Không cho phép xóa file cấu hình
+    editor:
+      preview: false
+    files:
+      - name: "layout"
+        label: "Ảnh Banner & Menu"
+        file: "assets/content/settings.json" # Đường dẫn đến file settings.json
+        fields:
+          - { label: "Banner Trang Chủ", name: "home_banner", widget: "image" }
+          - label: "Danh sách Menu Đa Cấp"
+            name: "menu_tree"
+            widget: "list"
+            fields:
+              - { label: "Tên Mục Chính", name: "parent", widget: "string" }
+              - label: "Các Trang Con"
+                name: "children"
+                widget: "list"
+                fields:
+                  - { label: "Tên Trang", name: "name", widget: "string" }
+                  - { label: "Link (ví dụ: goc-tan-man.html)", name: "link", widget: "string" }
+
+  # --- GIỮ NGUYÊN PHẦN BÀI VIẾT CỦA BẠN ---
   - name: "posts"
     label: "Tất cả bài viết"
-    # Lưu bài viết vào thư mục assets/content bạn đã có
     folder: "assets/content" 
     create: true
     extension: "json"
