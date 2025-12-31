@@ -2,8 +2,6 @@ backend:
   name: github
   repo: Isa2301-os/blog-nguoi-am-phu
   branch: main
-  base_url: https://decap-cms-oauth-node.vercel.app
-  auth_endpoint: /auth
 
 media_folder: "assets/image"
 public_folder: "assets/image"
