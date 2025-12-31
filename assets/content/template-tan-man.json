@@ -2,7 +2,7 @@
   "title": "Tiêu đề bài viết mới",
   "category": "tan-man",
   "date": "2024-01-01",
-  "image": "/assets/image/default.jpg",
+  "image": "assets/image/default.jpg",
   "description": "Đoạn mô tả ngắn gọn hiện ra ở trang chủ...",
   "body": "Nội dung bài viết của bạn ở đây. Bạn có thể dùng định dạng Markdown như **in đậm**, *in nghiêng*..."
 }
