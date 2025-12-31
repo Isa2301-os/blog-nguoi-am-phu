@@ -45,38 +45,39 @@
             <div id="post-body" class="post-content"></div>
         </article>
     </div>
-    
+
     <script>
-        async function loadPostDetail() {
+    async function loadPostDetail() {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get('id');
 
-        // Kiểm tra nếu không có tham số id trên URL
-        if (!postId) {
+     if (!postId) {
             document.getElementById('loading').innerText = "Không tìm thấy bài viết.";
             return;
         }
 
         try {
-            // Giải mã ID bài viết để tránh lỗi ký tự đặc biệt/khoảng trắng
-            const decodedId = decodeURIComponent(postId);
+            // GIẢI MÃ ID: Biến %20 thành khoảng trắng để fetch đúng file
+            const decodedFileName = decodeURIComponent(postId);
             
-            // TỐI ƯU: Truy cập trực tiếp file JSON trong thư mục content
-            const response = await fetch(`./assets/content/${decodedId}`);
-            if (!response.ok) throw new Error("Không thể tải dữ liệu bài viết.");
+            // Gọi file trực tiếp từ thư mục content
+            const response = await fetch(`./assets/content/${decodedFileName}`);
+            if (!response.ok) throw new Error("Không thể tải file dữ liệu.");
             
             const content = await response.json();
             const postImg = document.getElementById('post-image');
 
-            // 1. XỬ LÝ ẢNH (Dọn dẹp các đường dẫn sai lệch)
+            // 1. HIỂN THỊ TIÊU ĐỀ
+            document.getElementById('post-title').innerText = content.title || "Chưa có tiêu đề";
+            document.title = content.title;
+
+            // 2. HIỂN THỊ ẢNH (Dọn dẹp đường dẫn)
             if (content.image) {
                 let imgPath = content.image;
-                
-                // Loại bỏ dấu gạch chéo ở đầu nếu có
+            
                 if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
                 
-                // FIX LỖI ĐƯỜNG DẪN LỒNG NHAU:
-                // Nếu đường dẫn chứa 'image/', ta lấy phần tên file cuối cùng và ghép vào assets/image/
+                // Nếu đường dẫn bị sai (chứa content/assets), đưa về assets/image/
                 if (imgPath.includes('image/')) {
                     const parts = imgPath.split('image/');
                     imgPath = 'assets/image/' + parts[parts.length - 1];
@@ -84,39 +85,28 @@
                 
                 postImg.src = imgPath;
                 postImg.style.display = 'block';
-                
-                // Nếu ảnh vẫn không tồn tại (lỗi 404), ẩn khung ảnh đi cho đẹp
+        
                 postImg.onerror = function() { this.style.display = 'none'; };
             }
 
-            // 2. ĐỔ TIÊU ĐỀ
-            document.getElementById('post-title').innerText = content.title || "Chưa có tiêu đề";
-            document.title = (content.title || "Bài viết") + " - Blog Người Âm Phủ";
-
-            // 3. XỬ LÝ NỘI DUNG (BODY)
+            // 3. HIỂN THỊ NỘI DUNG (BODY)
             const bodyContainer = document.getElementById('post-body');
             if (content.body) {
-                // Sử dụng thư viện marked (đã khai báo ở <head>) để chuyển Markdown sang HTML
+                // Sử dụng thư viện marked để chuyển Markdown sang HTML
                 bodyContainer.innerHTML = marked.parse(content.body);
             } else {
-                bodyContainer.innerHTML = "<p>Nội dung đang được cập nhật...</p>";
+                bodyContainer.innerHTML = "Nội dung bài viết này đang trống.";
             }
-            
-            // Ẩn thông báo loading và hiển thị nội dung bài viết
+
             document.getElementById('loading').style.display = 'none';
             document.getElementById('post-content-area').style.display = 'block';
 
         } catch (error) {
-            console.error("Lỗi chi tiết:", error);
-            document.getElementById('loading').innerHTML = `
-                <p>Có lỗi xảy ra khi tải bài viết.</p>
-                <small style="color: red;">${error.message}</small>
-            `;
+            console.error("Lỗi:", error);
+            document.getElementById('loading').innerText = "Lỗi: Không tìm thấy file bài viết hoặc file bị sai định dạng.";
         }
     }
-
-    // Gọi hàm thực thi ngay khi trang web tải xong
-    window.onload = loadPostDetail;
-    </script>
+     window.onload = loadPostDetail;
+</script>
 </body>
 </html>
