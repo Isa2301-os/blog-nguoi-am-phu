@@ -3,42 +3,37 @@ paths:
   static: /
 
 collections_config:
+  # Chỉ giữ lại mục Góc Tản Mạn
   posts:
     path: assets/content
     name: Góc Tản Mạn
     icon: auto_stories
     extension: json
+    output: false
+    # Cách đặt tên file khi nhấn nút ADD
     create:
       path: "assets/content/{slug}.json"
+    # Chỉ hiển thị những bài có nhãn tan-man
     filter:
       base:
         category: tan-man
+    # Đường dẫn file mẫu (Lưu ý: Không có dấu / ở đầu)
     schemas:
       default:
-        path: "assets/content/template-tan-man.json"
+        path: assets/content/template-tan-man.json
 
-  phim:
-    path: assets/content
-    name: Review Phim
-    icon: movie
-    extension: json
-    create:
-      path: "assets/content/{slug}.json"
-    filter:
-      base:
-        category: phim
-    schemas:
-      default:
-        path: "assets/content/template-phim.json"
-
+# Cấu hình ô nhập liệu để tránh lỗi Missing Key
 _inputs:
+  _inputs:
   title:
     type: text
+  date:
+    type: date
   category:
-    type: select
-    options:
-      values: [tan-man, phim, thanh-nghi]
+    type: hidden
   image:
     type: image
+  description:
+    type: textarea
   body:
     type: markdown
