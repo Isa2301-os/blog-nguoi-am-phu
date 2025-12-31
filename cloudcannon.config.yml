@@ -1,40 +1,46 @@
+# 1. Cấu hình đường dẫn chung
 paths:
   uploads: assets/image
   static: /
 
-collections_config:
-  # 1. Mục chỉnh sửa Menu, Fanpage, Cộng đồng
+# 2. Cấu hình các file dữ liệu đơn lẻ (Dùng cho Menu, Thông tin web)
+data_config:
   settings:
     path: assets/content/settings.json
     name: Cấu hình Website
     icon: settings
-    parse_601: true
+    description: Thay đổi Menu, Banner và link mạng xã hội
 
-  # 2. Mục viết bài Góc Tản Mạn
+# 3. Cấu hình danh sách bài viết (Góc Tản Mạn)
+collections_config:
   posts:
     path: assets/content
     name: Góc Tản Mạn
     icon: auto_stories
+    # Chỉ lấy các file bài viết, loại bỏ file cấu hình hệ thống
+    filter:
+      exclude:
+        - settings.json
+        - template-tan-man.json
     extension: json
     output: false
     create:
       path: "assets/content/{slug}.json"
-    filter:
-      base:
-        category: tan-man
     schemas:
       default:
         path: assets/content/template-tan-man.json
-    # Tự động hiển thị ảnh bài viết trong danh sách cho đẹp
+    # Tùy chỉnh hiển thị danh sách bài viết trong CloudCannon
     config:
       card:
         title: title
         image: image
-        subtext: category
+        subtext: date
 
+# 4. Giao diện nhập liệu (Editor UI)
 _inputs:
   title:
     type: text
+    comment: "Tiêu đề bài viết hiển thị trên thẻ card"
   date:
     type: date
   category:
@@ -43,9 +49,22 @@ _inputs:
       values:
         - tan-man
         - phim
+        - show
   image:
     type: image
+    comment: "Ảnh đại diện cho bài viết"
   description:
     type: textarea
   body:
     type: markdown
+    comment: "Nội dung chính của bài viết"
+
+  # Cấu hình riêng cho Menu trong file settings.json
+  menu:
+    type: array
+    item_options:
+      value_key: name
+  sub_menu:
+    type: array
+    item_options:
+      value_key: name
