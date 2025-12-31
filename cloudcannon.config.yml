@@ -22,6 +22,7 @@ collections_config:
       exclude:
         - settings.json
         - template-tan-man.json
+        - tieu-de-bai-viet-mau.json # Thêm tên file bài viết mẫu của bạn vào đây
     extension: json
     output: false
     create:
