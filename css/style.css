@@ -143,61 +143,57 @@ body {
         aspect-ratio: 16 / 9;
     }
 }
-/* Menu chính nằm ngang */
+/* Thiết lập menu ngang */
 #dynamic-menu {
     display: flex;
     list-style: none;
-    gap: 30px;
+    gap: 25px;
     padding: 0;
 }
 
-/* Mục menu cha */
-.menu-parent {
+.menu-item {
     position: relative;
 }
 
-.menu-parent > a {
+.menu-item a {
     text-decoration: none;
-    font-weight: bold;
     color: #333;
-    padding: 10px 0;
+    font-weight: bold;
+    padding: 10px;
     display: block;
 }
 
-/* Menu con (Sub-menu) - Ẩn mặc định */
+/* Menu con - Ẩn mặc định */
 .sub-menu {
     display: none;
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background: #fff;
+    min-width: 160px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     list-style: none;
     padding: 10px 0;
-    min-width: 180px;
-    z-index: 1000;
+    z-index: 999;
     border-radius: 4px;
 }
 
 .sub-menu li a {
-    padding: 10px 20px;
-    display: block;
-    text-decoration: none;
-    color: #555;
+    font-weight: normal;
     font-size: 0.9em;
+    padding: 8px 20px;
 }
 
 .sub-menu li a:hover {
     background-color: #f8f8f8;
-    color: #000;
 }
 
-/* Hiện menu con khi di chuột vào menu cha */
-.menu-parent:hover .sub-menu {
+/* Hiển thị menu con khi di chuột */
+.menu-item:hover .sub-menu {
     display: block;
 }
 
 .arrow {
     font-size: 0.7em;
-    margin-left: 5px;
+    margin-left: 3px;
 }

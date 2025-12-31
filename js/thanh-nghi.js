@@ -68,6 +68,40 @@ async function renderMenu() {
         console.error("Không thể tải menu:", error);
     }
 }
+async function renderMenu() {
+    try {
+        // Gọi file settings.json từ thư mục assets/content
+        const res = await fetch('./assets/content/settings.json');
+        if (!res.ok) throw new Error("Không tìm thấy file settings.json");
+        
+        const data = await res.json();
+        const menuContainer = document.getElementById('dynamic-menu');
+        
+        if (!menuContainer || !data.menu_tree) return;
 
-// Gọi hàm khi trang web tải xong
+        let menuHtml = '';
+        data.menu_tree.forEach(item => {
+            // Tạo mục cha (ví dụ: Thành Nghị)
+            menuHtml += `
+                <li class="menu-item has-children">
+                    <a href="#">${item.parent} <span class="arrow">▼</span></a>
+                    <ul class="sub-menu">`;
+            
+            // Tạo các mục con (ví dụ: Góc Tản Mạn, Phim)
+            if (item.children) {
+                item.children.forEach(child => {
+                    menuHtml += `<li><a href="${child.link}">${child.name}</a></li>`;
+                });
+            }
+            
+            menuHtml += `</ul></li>`;
+        });
+        
+        menuContainer.innerHTML = menuHtml;
+    } catch (error) {
+        console.error("Lỗi hiển thị menu:", error);
+    }
+}
+
+// Chạy hàm ngay khi trang tải xong
 document.addEventListener('DOMContentLoaded', renderMenu);
