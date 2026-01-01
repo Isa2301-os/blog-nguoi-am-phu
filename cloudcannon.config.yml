@@ -22,7 +22,7 @@ collections_config:
     
     create:
       # Đảm bảo đường dẫn tạo mới trùng khớp với template
-      path: "assets/content/{year}-{month}-{day}-{slug}-{uuid}.json"
+      path: "{year}-{month}-{day}-{slug}-{uuid}.json"
     
     slug:
       from_config: title
