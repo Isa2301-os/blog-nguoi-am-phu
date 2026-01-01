@@ -1,7 +1,7 @@
 let allPosts = []; 
 const postsPerPage = 6; 
 
-// 1. HÀM DỌN DẸP ĐƯỜNG DẪN ẢNH
+// 1. HÀM DỌN DẸP ĐƯỜNG DẪN ẢNH (Giữ nguyên logic của bạn)
 function getCleanPath(rawPath) {
     if (!rawPath) return 'assets/image/anh1.jpg';
     let cleanPath = rawPath;
@@ -14,7 +14,7 @@ function getCleanPath(rawPath) {
     return cleanPath;
 }
 
-// 2. LOAD BÀI VIẾT THEO CATEGORY
+// 2. LOAD BÀI VIẾT THEO CATEGORY (Đã sửa lỗi dòng 34 và tăng tính chịu lỗi)
 async function loadCategoryPosts(categoryName, page = 1) {
     const repoOwner = "Isa2301-os";
     const repoName = "blog-nguoi-am-phu";
@@ -23,7 +23,11 @@ async function loadCategoryPosts(categoryName, page = 1) {
     try {
         const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
         const files = await response.json();
-        if (!Array.isArray(files)) return;
+        
+        if (!Array.isArray(files)) {
+            console.error("Không tìm thấy danh sách file hoặc API giới hạn.");
+            return;
+        }
 
         const jsonFiles = files.filter(f => 
             f.name.endsWith('.json') && 
@@ -31,14 +35,32 @@ async function loadCategoryPosts(categoryName, page = 1) {
             f.name !== 'template-tan-man.json'
         ).reverse();
 
-        allPosts = []; // Làm sạch mảng trước khi nạp bài mới
+        allPosts = []; 
 
-        // Dùng Promise.all để tải nhiều file cùng lúc (Nhanh hơn)
-        const postPromises = jsonFiles.map(file => fetch(file.download_url).then(r => r.json().then(data => ({...data, fileName: file.name}))));
+        // Tải từng file và kiểm tra JSON hợp lệ
+        const postPromises = jsonFiles.map(file => 
+            fetch(file.download_url)
+                .then(r => r.text()) // Đọc dạng text để tránh crash khi parse JSON lỗi
+                .then(text => {
+                    try {
+                        const data = JSON.parse(text);
+                        return { ...data, fileName: file.name };
+                    } catch (e) {
+                        console.warn(`Bỏ qua file lỗi định dạng JSON: ${file.name}`);
+                        return null; // Trả về null nếu file hỏng
+                    }
+                })
+                .catch(err => {
+                    console.error(`Lỗi kết nối khi tải file ${file.name}:`, err);
+                    return null;
+                })
+        );
+
         const results = await Promise.all(postPromises);
 
+        // Lọc bỏ các bài viết null và phân loại theo category
         results.forEach(data => {
-            if (data.category && data.category.toLowerCase() === categoryName.toLowerCase()) {
+            if (data && data.category && data.category.toLowerCase() === categoryName.toLowerCase()) {
                 allPosts.push({ 
                     ...data, 
                     image: getCleanPath(data.image)
@@ -50,12 +72,13 @@ async function loadCategoryPosts(categoryName, page = 1) {
         setupPagination(page);
 
     } catch (error) {
-        console.error("Lỗi tải bài viết:", error);
-        document.getElementById('post-list-container').innerHTML = "Lỗi tải dữ liệu.";
+        console.error("Lỗi hệ thống tải bài viết:", error);
+        const container = document.getElementById('post-list-container');
+        if (container) container.innerHTML = "<p style='text-align:center;'>Không thể kết nối dữ liệu. Vui lòng thử lại sau.</p>";
     }
 }
 
-// 3. HIỂN THỊ POLAROID
+// 3. HIỂN THỊ POLAROID (Đã tối ưu hiển thị an toàn)
 function displayPosts(page) {
     const container = document.getElementById('post-list-container');
     if (!container) return;
@@ -65,21 +88,19 @@ function displayPosts(page) {
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
+    if (paginatedPosts.length === 0) {
+        container.innerHTML = "<p style='text-align:center;'>Chưa có bài viết nào trong mục này.</p>";
+        return;
+    }
+
     paginatedPosts.forEach(post => {
-        // --- PHẦN SỬA LỖI DÒNG 53 (Xử lý ngày tháng an toàn) ---
-        let displayDate = "";
-        try {
-            if (post && post.date && typeof post.date === 'string') {
-                displayDate = post.date.includes('T') ? post.date.split('T')[0] : post.date;
-            } else {
-                displayDate = post && post.date ? post.date : "Mới nhất";
-            }
-        } catch (e) {
-            displayDate = "Mới nhất";
+        // Xử lý ngày tháng an toàn
+        let displayDate = "Mới nhất";
+        if (post.date) {
+            displayDate = post.date.includes('T') ? post.date.split('T')[0] : post.date;
         }
 
-        // --- KIỂM TRA TIÊU ĐỀ VÀ ẢNH AN TOÀN ---
-        const safeTitle = post.title || "Đang cập nhật...";
+        const safeTitle = post.title || "Tiêu đề đang cập nhật...";
         const safeImage = post.image || 'assets/image/anh1.jpg';
         const safeFileName = post.fileName ? encodeURIComponent(post.fileName) : "";
 
@@ -99,7 +120,7 @@ function displayPosts(page) {
     });
 }
 
-// 5. PHÂN TRANG
+// 4. PHÂN TRANG (Giữ nguyên)
 function setupPagination(currentPage) {
     const paginationContainer = document.getElementById('pagination-container');
     if (!paginationContainer) return;
@@ -125,5 +146,6 @@ function setupPagination(currentPage) {
 
 // KHỞI CHẠY
 document.addEventListener("DOMContentLoaded", () => {
-loadCategoryPosts('tan-man'); // Load bài viết sau
+    // Tự động lấy category từ tiêu đề trang hoặc mặc định là 'tan-man'
+    loadCategoryPosts('tan-man'); 
 });
