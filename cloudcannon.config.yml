@@ -13,7 +13,6 @@ data_config:
 
 # 3. Cấu hình danh sách bài viết (Góc Tản Mạn)
 collections_config:
-  collections_config:
   posts:
     path: assets/content
     # THAY ĐỔI: Thêm {uuid} để đảm bảo tên file luôn là duy nhất, 
