@@ -1,7 +1,7 @@
 let allPosts = []; 
 const postsPerPage = 6; 
 
-// 1. HÀM DỌN DẸP ĐƯỜNG DẪN ẢNH (Quan trọng nhất để fix lỗi ảnh)
+// 1. HÀM DỌN DẸP ĐƯỜNG DẪN ẢNH
 function getCleanPath(rawPath) {
     if (!rawPath) return 'assets/image/anh1.jpg';
     let cleanPath = rawPath;
@@ -14,6 +14,23 @@ function getCleanPath(rawPath) {
     return cleanPath;
 }
 
+// 2. HÀM LOAD MENU ĐỘNG TỪ SETTINGS.JSON
+async function loadMenu() {
+    try {
+        const res = await fetch('assets/content/settings.json');
+        const data = await res.json();
+        const menuContainer = document.getElementById('dynamic-menu');
+        if (!menuContainer || !data.menu) return;
+
+        menuContainer.innerHTML = data.menu.map(item => `
+            <li><a href="${item.link}">${item.name}</a></li>
+        `).join('');
+    } catch (err) {
+        console.error("Không load được menu:", err);
+    }
+}
+
+// 3. LOAD BÀI VIẾT THEO CATEGORY
 async function loadCategoryPosts(categoryName, page = 1) {
     const repoOwner = "Isa2301-os";
     const repoName = "blog-nguoi-am-phu";
@@ -22,40 +39,39 @@ async function loadCategoryPosts(categoryName, page = 1) {
     try {
         const response = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${folderPath}`);
         const files = await response.json();
-        
         if (!Array.isArray(files)) return;
 
-        // Lọc bỏ file hệ thống và bài viết mẫu để làm sạch danh sách
         const jsonFiles = files.filter(f => 
             f.name.endsWith('.json') && 
             f.name !== 'settings.json' && 
             f.name !== 'template-tan-man.json'
         ).reverse();
 
-        allPosts = []; 
-        
-        for (const file of jsonFiles) {
-            const res = await fetch(file.download_url);
-            const data = await res.json();
-            
+        allPosts = []; // Làm sạch mảng trước khi nạp bài mới
+
+        // Dùng Promise.all để tải nhiều file cùng lúc (Nhanh hơn)
+        const postPromises = jsonFiles.map(file => fetch(file.download_url).then(r => r.json().then(data => ({...data, fileName: file.name}))));
+        const results = await Promise.all(postPromises);
+
+        results.forEach(data => {
             if (data.category && data.category.toLowerCase() === categoryName.toLowerCase()) {
                 allPosts.push({ 
                     ...data, 
-                    image: getCleanPath(data.image), 
-                    fileName: file.name 
+                    image: getCleanPath(data.image)
                 });
             }
-        }
+        });
 
         displayPosts(page);
         setupPagination(page);
 
     } catch (error) {
         console.error("Lỗi tải bài viết:", error);
+        document.getElementById('post-list-container').innerHTML = "Lỗi tải dữ liệu.";
     }
 }
 
-// 2. HÀM HIỂN THỊ VỚI CẤU TRÚC CSS POLAROID
+// 4. HIỂN THỊ POLAROID
 function displayPosts(page) {
     const container = document.querySelector('.grid-container');
     if (!container) return;
@@ -66,7 +82,6 @@ function displayPosts(page) {
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
     paginatedPosts.forEach(post => {
-        // Cấu trúc HTML này phải khớp 100% với file CSS của bạn
         const cardHtml = `
             <a href="post-detail.html?id=${encodeURIComponent(post.fileName)}" class="photo-card-link">
                 <div class="photo-card">
@@ -83,8 +98,9 @@ function displayPosts(page) {
     });
 }
 
+// 5. PHÂN TRANG
 function setupPagination(currentPage) {
-    const paginationContainer = document.querySelector('.pagination');
+    const paginationContainer = document.getElementById('pagination-container');
     if (!paginationContainer) return;
     paginationContainer.innerHTML = '';
 
@@ -96,17 +112,18 @@ function setupPagination(currentPage) {
         link.href = "#";
         link.innerText = i;
         link.className = (i === currentPage) ? "page-link active" : "page-link";
-        
-        link.addEventListener('click', (e) => {
+        link.onclick = (e) => {
             e.preventDefault();
             displayPosts(i);
             setupPagination(i);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        };
         paginationContainer.appendChild(link);
     }
 }
 
+// KHỞI CHẠY
 document.addEventListener("DOMContentLoaded", () => {
-    loadCategoryPosts('tan-man');
+    loadMenu(); // Load menu trước
+    loadCategoryPosts('tan-man'); // Load bài viết sau
 });
