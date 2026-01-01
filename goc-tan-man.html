@@ -3,32 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Góc Tản Mạn - Thành Nghị</title>
-    <link rel="stylesheet" href="css/goc-tan-man.css"> 
+    <title>Góc Tản Mạn - Blog Người Âm Phủ</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/goc-tan-man.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <a href="thanh-nghi.html" class="back-home">← QUAY LẠI</a>
-            <h1>GÓC TẢN MẠN</h1>
-            <hr>
-        </header>
+    <nav class="main-nav">
+        <ul id="dynamic-menu"></ul>
+    </nav>
 
-        <main class="article-content">
-            <div class="banner-wrapper">
-                <img src="assets/image/image2.jpg" alt="Tản mạn">
-            </div>
-
-            <p class="intro-text">
-                Đây là nơi lưu giữ những bài cảm nhận dành cho Thành Nghị...
-            </p>
-
-            <div id="grid-container" class="grid-container">
-                </div>
-
-            <div class="pagination"> </div>
-        </main>
+    <div class="title-container">
+        <h1 class="main-title">GÓC TẢN MẠN</h1>
     </div>
+
+    <main class="grid-container" id="post-list-container">
+        <div id="loading">Đang tải các bài viết...</div>
+    </main>
+
+    <div class="pagination" id="pagination-container"></div>
 
     <script src="js/main.js"></script>
 </body>
