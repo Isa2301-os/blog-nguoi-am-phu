@@ -15,10 +15,15 @@ data_config:
 collections_config:
   posts:
     path: assets/content
-    name: Góc Tản Mạn
-    icon: auto_stories
-    extension: json
-    output: false
+    # Ép tên file mới tạo luôn là tiếng Anh/Số, không dấu
+    file_config:
+      name_template: "post-{date}.json" 
+    create:
+      path: "assets/content/{slug}.json"
+    slug:
+      from_config: title
+      remove_accents: true
+      case: lowercase
     
     # QUAN TRỌNG: Tự động biến tiêu đề thành tên file không dấu, gạch ngang
     create:
@@ -72,7 +77,7 @@ _inputs:
   body:
     type: markdown
     comment: "Nội dung chính của bài viết"
-    
+
   menu:
     type: array
     item_options:

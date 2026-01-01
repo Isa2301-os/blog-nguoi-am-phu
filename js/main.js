@@ -66,16 +66,32 @@ function displayPosts(page) {
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
     paginatedPosts.forEach(post => {
-        // CẤU TRÚC CHUẨN ĐỂ KHỚP VỚI CSS POLAROID
+        // --- PHẦN SỬA LỖI DÒNG 53 (Xử lý ngày tháng an toàn) ---
+        let displayDate = "";
+        try {
+            if (post && post.date && typeof post.date === 'string') {
+                displayDate = post.date.includes('T') ? post.date.split('T')[0] : post.date;
+            } else {
+                displayDate = post && post.date ? post.date : "Mới nhất";
+            }
+        } catch (e) {
+            displayDate = "Mới nhất";
+        }
+
+        // --- KIỂM TRA TIÊU ĐỀ VÀ ẢNH AN TOÀN ---
+        const safeTitle = post.title || "Đang cập nhật...";
+        const safeImage = post.image || 'assets/image/anh1.jpg';
+        const safeFileName = post.fileName ? encodeURIComponent(post.fileName) : "";
+
         const cardHtml = `
-            <a href="post-detail.html?id=${encodeURIComponent(post.fileName)}" class="photo-card-link">
+            <a href="post-detail.html?id=${safeFileName}" class="photo-card-link">
                 <div class="photo-card">
                     <div class="polaroid-frame">
-                        <img src="${post.image}" alt="${post.title}" onerror="this.src='assets/image/anh1.jpg'">
+                        <img src="${safeImage}" alt="${safeTitle}" onerror="this.src='assets/image/anh1.jpg'">
                     </div>
                     <div class="caption-container">
-                        <div class="caption">${post.title}</div>
-                        <div class="post-date">${post.date ? post.date.split('T')[0] : ''}</div>
+                        <div class="caption">${safeTitle}</div>
+                        <div class="post-date">${displayDate}</div>
                     </div>
                 </div>
             </a>`;
