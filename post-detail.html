@@ -4,35 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi Tiết Bài Viết</title>
-    <link rel="stylesheet" href="assets/css/style.css"> <style>
-        .loading { text-align: center; padding: 50px; font-style: italic; color: #888; }
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/goc-tan-man.css">
+    <style>
+        .loading { text-align: center; padding: 100px; font-style: italic; color: #888; }
         .error-box { text-align: center; padding: 50px; color: #d9534f; background: #fdf7f7; border-radius: 8px; margin: 20px; }
-        #post-content img { max-width: 100%; height: auto; border-radius: 8px; }
+        /* Đảm bảo nội dung bài viết dễ đọc */
+        #post-content { 
+            white-space: pre-line; /* Quan trọng: Giữ nguyên xuống dòng từ JSON */
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+        }
+        #post-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 20px 0; display: block; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div id="post-detail-container">
-            <div id="loading-state" class="loading">Đang tải nội dung...</div>
+            <div id="loading-state" class="loading">Đang tải câu chuyện...</div>
             
-            <div id="post-display" style="display: none;">
-                <a href="index.html" style="text-decoration: none; color: #666;">← Quay lại</a>
-                <h1 id="post-title" style="margin-top: 20px;"></h1>
-                <p id="post-date" style="color: #999; font-size: 0.9em;"></p>
-                <hr>
-                <div id="post-content" style="line-height: 1.6; margin-top: 20px;">
+            <div id="post-display" style="display: none; max-width: 800px; margin: 0 auto;">
+                <nav style="padding: 20px 0;">
+                    <a href="goc-tan-man.html" class="back-home">← Quay lại Góc Tản Mạn</a>
+                </nav>
+
+                <header style="margin-bottom: 30px;">
+                    <h1 id="post-title" style="margin-bottom: 10px; line-height: 1.3;"></h1>
+                    <p id="post-date" style="color: #999; font-size: 0.9em;"></p>
+                </header>
+
+                <div id="post-content" class="post-content">
                     </div>
             </div>
 
             <div id="error-state" class="error-box" style="display: none;">
-                <p>Lỗi: Không thể hiển thị nội dung bài viết này.</p>
-                <a href="index.html">Quay về trang chủ</a>
+                <p>Tiếc quá, bài viết này không tìm thấy hoặc đã bị gỡ bỏ.</p>
+                <a href="goc-tan-man.html">Quay về danh sách bài viết</a>
             </div>
         </div>
     </div>
 
     <script>
+        // Hàm làm sạch đường dẫn ảnh (Đồng bộ với main.js)
+        function getCleanImagePath(rawPath) {
+            if (!rawPath) return "";
+            let path = rawPath.startsWith('/') ? rawPath.substring(1) : rawPath;
+            if (path.includes('image/')) {
+                const parts = path.split('image/');
+                return 'assets/image/' + parts[parts.length - 1];
+            }
+            return path;
+        }
+
         async function loadPostDetail() {
             const params = new URLSearchParams(window.location.search);
             const postId = params.get('id');
@@ -47,56 +72,55 @@
                 return;
             }
 
-            // SỬA LỖI 404: Thêm đúng đường dẫn thư mục chứa JSON
-            const url = `assets/content/${decodeURIComponent(postId)}`;
-
             try {
+                // Fetch trực tiếp từ assets/content/
+                const url = `assets/content/${decodeURIComponent(postId)}`;
                 const response = await fetch(url);
-                if (!response.ok) throw new Error("Không tìm thấy file bài viết (404)");
+                if (!response.ok) throw new Error("404");
 
                 const text = await response.text();
                 let cleanText = text.trim();
 
-                // BỘ LỌC CHỐNG TRÙNG LẶP JSON: 
-                // Xử lý trường hợp file bị CloudCannon chèn 2 khối {}{...}
+                // Chống trùng lặp JSON
                 if (cleanText.includes('}{')) {
                     cleanText = cleanText.split('}{')[0] + '}';
                 } else if ((cleanText.match(/}/g) || []).length > 1 && !cleanText.startsWith('[')) {
-                    // Trường hợp dính ngoặc nhưng có khoảng trắng ở giữa
                     cleanText = cleanText.substring(0, cleanText.indexOf('}') + 1);
                 }
 
                 const post = JSON.parse(cleanText);
 
-                // Đổ dữ liệu vào giao diện
-                document.title = post.title || "Chi tiết bài viết";
-                document.getElementById('post-title').innerText = post.title || "Tiêu đề không tên";
+                // Đổ dữ liệu
+                document.title = post.title || "Blog Người Âm Phủ";
+                document.getElementById('post-title').innerText = post.title;
                 
-                // Xử lý ngày tháng
                 if (post.date) {
-                    document.getElementById('post-date').innerText = post.date.split('T')[0];
+                    document.getElementById('post-date').innerText = "Ngày đăng: " + post.date.split('T')[0];
                 }
 
-                // Hiển thị nội dung (Chuyển đổi từ Markdown sang HTML nếu cần, ở đây dùng text/html cơ bản)
                 const contentArea = document.getElementById('post-content');
                 
-                // Nếu có ảnh đại diện bài viết
-                let mainImage = post.image ? `<img src="${post.image}" style="margin-bottom:20px;"><br>` : "";
+                // Xử lý ảnh đại diện (nếu có)
+                let mainImageHtml = "";
+                if (post.image) {
+                    const cleanImgPath = getCleanImagePath(post.image);
+                    mainImageHtml = `<img src="${cleanImgPath}" alt="${post.title}">`;
+                }
                 
-                contentArea.innerHTML = mainImage + (post.body || post.description || "Nội dung đang được cập nhật...");
+                // Hiển thị Body hoặc Description
+                const bodyContent = post.body || post.description || "Nội dung đang được biên tập...";
+                contentArea.innerHTML = mainImageHtml + bodyContent;
 
-                // Hiển thị kết quả
                 loadingArea.style.display = 'none';
                 displayArea.style.display = 'block';
 
             } catch (error) {
-                console.error("Lỗi chi tiết:", error);
+                console.error("Lỗi:", error);
                 loadingArea.style.display = 'none';
                 errorArea.style.display = 'block';
             }
         }
 
-        // Khởi chạy khi trang tải xong
         document.addEventListener('DOMContentLoaded', loadPostDetail);
     </script>
 </body>

@@ -4,20 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Góc Tản Mạn - Blog Người Âm Phủ</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/goc-tan-man.css">
 </head>
 <body>
 
-    <div class="title-container">
-        <h1 class="main-title">GÓC TẢN MẠN</h1>
+    <div class="container"> <nav style="padding: 20px 0;">
+            <a href="index.html" class="back-home">← Quay lại trang chủ</a>
+        </nav>
+
+        <div class="title-container">
+            <h1 class="main-title">GÓC TẢN MẠN</h1>
+            <p class="intro-text">Nơi lưu giữ những dòng cảm xúc vụn vặt...</p>
+        </div>
+
+        <main id="post-list-container" class="grid-container">
+            <div id="loading" style="text-align: center; grid-column: 1/-1;">
+                <p>Đang tải các bài viết...</p>
+            </div>
+        </main>
+
+        <div class="pagination" id="pagination-container"></div>
     </div>
-
-    <main class="grid-container" id="post-list-container">
-        <div id="loading">Đang tải các bài viết...</div>
-    </main>
-
-    <div class="pagination" id="pagination-container"></div>
 
     <script src="js/main.js"></script>
 </body>
