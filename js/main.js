@@ -39,23 +39,27 @@ async function loadCategoryPosts(categoryName, page = 1) {
 
         // Tải từng file và kiểm tra JSON hợp lệ
         const postPromises = jsonFiles.map(file => 
-            fetch(file.download_url)
-                .then(r => r.text()) // Đọc dạng text để tránh crash khi parse JSON lỗi
-                .then(text => {
-                    try {
-                        const data = JSON.parse(text);
-                        return { ...data, fileName: file.name };
-                    } catch (e) {
-                        console.warn(`Bỏ qua file lỗi định dạng JSON: ${file.name}`);
-                        return null; // Trả về null nếu file hỏng
-                    }
-                })
-                .catch(err => {
-                    console.error(`Lỗi kết nối khi tải file ${file.name}:`, err);
-                    return null;
-                })
-        );
-
+    fetch(file.download_url)
+        .then(r => r.text())
+        .then(text => {
+            try {
+                let cleanText = text.trim();
+                // Nếu phát hiện 2 khối dính nhau (}{), chỉ lấy khối đầu tiên
+                if (cleanText.includes('}{')) {
+                    cleanText = cleanText.split('}{')[0] + '}';
+                } else if ((cleanText.match(/}/g) || []).length > 1) {
+                    // Trường hợp dính nhưng có khoảng trắng ở giữa
+                    cleanText = cleanText.substring(0, cleanText.indexOf('}') + 1);
+                }
+                
+                const data = JSON.parse(cleanText);
+                return { ...data, fileName: file.name };
+            } catch (e) {
+                console.warn("Bỏ qua file hỏng cấu hình:", file.name);
+                return null;
+            }
+        })
+);
         const results = await Promise.all(postPromises);
 
         // Lọc bỏ các bài viết null và phân loại theo category
