@@ -1,13 +1,12 @@
 let allPosts = []; 
 const postsPerPage = 6; 
 
-// Hàm dọn dẹp đường dẫn ảnh (Xử lý mọi lỗi đường dẫn từ CloudCannon)
+// 1. HÀM DỌN DẸP ĐƯỜNG DẪN ẢNH (Quan trọng nhất để fix lỗi ảnh)
 function getCleanPath(rawPath) {
-    if (!rawPath) return 'assets/image/anh1.jpg'; // Ảnh mặc định nếu bài ko có ảnh
+    if (!rawPath) return 'assets/image/anh1.jpg';
     let cleanPath = rawPath;
     if (cleanPath.startsWith('/')) cleanPath = cleanPath.substring(1);
     
-    // Nếu bị lồng thư mục, chỉ lấy phần từ assets/image trở đi
     if (cleanPath.includes('image/')) {
         const parts = cleanPath.split('image/');
         cleanPath = 'assets/image/' + parts[parts.length - 1];
@@ -26,14 +25,14 @@ async function loadCategoryPosts(categoryName, page = 1) {
         
         if (!Array.isArray(files)) return;
 
-        // Lọc bỏ file hệ thống và file mẫu
+        // Lọc bỏ file hệ thống và bài viết mẫu để làm sạch danh sách
         const jsonFiles = files.filter(f => 
             f.name.endsWith('.json') && 
             f.name !== 'settings.json' && 
             f.name !== 'template-tan-man.json'
         ).reverse();
 
-        allPosts = []; // Reset mảng để tránh lặp bài viết
+        allPosts = []; 
         
         for (const file of jsonFiles) {
             const res = await fetch(file.download_url);
@@ -53,12 +52,12 @@ async function loadCategoryPosts(categoryName, page = 1) {
 
     } catch (error) {
         console.error("Lỗi tải bài viết:", error);
-        document.getElementById('loading').innerText = "Không thể tải bài viết lúc này.";
     }
 }
 
+// 2. HÀM HIỂN THỊ VỚI CẤU TRÚC CSS POLAROID
 function displayPosts(page) {
-    const container = document.getElementById('post-list-container');
+    const container = document.querySelector('.grid-container');
     if (!container) return;
     container.innerHTML = '';
 
@@ -66,12 +65,8 @@ function displayPosts(page) {
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
-    if (paginatedPosts.length === 0) {
-        container.innerHTML = "<p>Chưa có bài viết nào trong mục này.</p>";
-        return;
-    }
-
-        paginatedPosts.forEach(post => {
+    paginatedPosts.forEach(post => {
+        // Cấu trúc HTML này phải khớp 100% với file CSS của bạn
         const cardHtml = `
             <a href="post-detail.html?id=${encodeURIComponent(post.fileName)}" class="photo-card-link">
                 <div class="photo-card">
@@ -89,26 +84,29 @@ function displayPosts(page) {
 }
 
 function setupPagination(currentPage) {
-    const container = document.getElementById('pagination-container');
-    if (!container) return;
-    container.innerHTML = '';
+    const paginationContainer = document.querySelector('.pagination');
+    if (!paginationContainer) return;
+    paginationContainer.innerHTML = '';
 
     const totalPages = Math.ceil(allPosts.length / postsPerPage);
     if (totalPages <= 1) return;
 
     for (let i = 1; i <= totalPages; i++) {
-        const btn = document.createElement('button');
-        btn.innerText = i;
-        btn.className = (i === currentPage) ? "page-link active" : "page-link";
-        btn.onclick = () => {
+        const link = document.createElement('a');
+        link.href = "#";
+        link.innerText = i;
+        link.className = (i === currentPage) ? "page-link active" : "page-link";
+        
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
             displayPosts(i);
             setupPagination(i);
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-        container.appendChild(btn);
+        });
+        paginationContainer.appendChild(link);
     }
 }
 
-    document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     loadCategoryPosts('tan-man');
 });
