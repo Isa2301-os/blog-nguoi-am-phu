@@ -29,14 +29,6 @@ collections_config:
       remove_accents: true
       case: lowercase
     # Giữ nguyên các phần filter và schemas cũ của bạn...
-    
-    # QUAN TRỌNG: Tự động biến tiêu đề thành tên file không dấu, gạch ngang
-    create:
-      path: "assets/content/{slug}.json"
-    slug:
-      from_config: title
-      remove_accents: true # Xóa dấu tiếng Việt
-      case: lowercase      # Viết thường hết
       
     # QUAN TRỌNG: Sửa lỗi đường dẫn ảnh khi lưu
     configuration:
