@@ -16,11 +16,15 @@ collections_config:
   collections_config:
   posts:
     path: assets/content
-    # Thay đổi template để mỗi bài viết có tên file duy nhất theo ngày giờ
+    # THAY ĐỔI: Thêm {uuid} để đảm bảo tên file luôn là duy nhất, 
+    # kể cả khi bạn đặt tiêu đề trùng nhau.
     file_config:
-      name_template: "{slug}-{year}-{month}-{day}-{uuid}.json" 
+      name_template: "{year}-{month}-{day}-{slug}-{uuid}.json" 
+    
     create:
-      path: "assets/content/{slug}.json"
+      # Đảm bảo đường dẫn tạo mới trùng khớp với template
+      path: "assets/content/{year}-{month}-{day}-{slug}-{uuid}.json"
+    
     slug:
       from_config: title
       remove_accents: true
