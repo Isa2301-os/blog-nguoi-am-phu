@@ -6,7 +6,6 @@
     <title>Đang tải bài viết...</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Giữ nguyên CSS của bạn và thêm hiệu ứng mượt mà */
         .post-container {
             max-width: 800px;
             margin: 40px auto;
@@ -14,7 +13,6 @@
             background: #fff;
             border-radius: 12px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            transition: opacity 0.5s ease;
         }
         #post-image {
             width: 100%;
@@ -22,12 +20,13 @@
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 25px;
-            display: none; /* Chỉ hiện khi đã load được ảnh */
+            display: none; 
         }
         .post-title { font-size: 2.2em; color: #222; margin-bottom: 15px; }
         .post-content { font-size: 1.15em; line-height: 1.8; color: #444; }
         .post-content img { max-width: 100%; border-radius: 8px; margin: 20px 0; }
         #loading { text-align: center; padding: 50px; font-style: italic; color: #888; }
+        .back-btn { text-decoration: none; color: #666; font-weight: bold; display: inline-block; margin-bottom: 20px; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -47,6 +46,20 @@
     </div>
 
     <script>
+    // Hàm làm sạch đường dẫn ảnh an toàn
+    function getCleanPath(rawPath) {
+        if (!rawPath) return 'assets/image/anh1.jpg';
+        let path = rawPath;
+        if (path.startsWith('/')) path = path.substring(1);
+        
+        // Sửa lỗi đường dẫn lồng assets/content/assets...
+        if (path.includes('image/')) {
+            const parts = path.split('image/');
+            path = 'assets/image/' + parts[parts.length - 1];
+        }
+        return path;
+    }
+
     async function loadPostDetail() {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get('id');
@@ -57,40 +70,52 @@
         }
 
         try {
-            // GIẢI MÃ URL: Quan trọng để đọc được file có dấu tiếng Việt
             const decodedFileName = decodeURIComponent(postId); 
             const response = await fetch(`./assets/content/${decodedFileName}`);
-            if (!response.ok) throw new Error("Không thể tải file dữ liệu bài viết.");
             
-            const content = await response.json();
+            if (!response.ok) throw new Error("Không thể tải file bài viết.");
+            
+            // --- PHẦN SỬA LỖI QUAN TRỌNG: Đọc text thay vì r.json() ---
+            const text = await response.text();
+            let content;
+            
+            try {
+                // Thử parse bình thường trước
+                content = JSON.parse(text);
+            } catch (jsonErr) {
+                // Nếu dính 2 cấu trúc JSON, lấy phần đầu tiên (từ { đến dấu } đầu tiên)
+                console.warn("Phát hiện file bị dính nội dung thừa, đang tự động sửa lỗi...");
+                const firstObjectMatch = text.substring(0, text.indexOf('}') + 1);
+                content = JSON.parse(firstObjectMatch);
+            }
+            // -------------------------------------------------------
+
             const postImg = document.getElementById('post-image');
 
-            // 1. XỬ LÝ ẢNH
-            if (content.image) {
-            let imgPath = content.image;
-                if (imgPath.startsWith('/')) imgPath = imgPath.substring(1);
-                
-                // Fix lỗi nếu đường dẫn vẫn còn dính thư mục cũ
-                imgPath = imgPath.replace('content/assets/image/', 'assets/image/');
-                
-                postImg.src = imgPath;
-                postImg.style.display = 'block';
-                // Nếu vẫn lỗi ảnh thì dùng ảnh mặc định
-                postImg.onerror = function() { this.src = 'assets/image/anh1.jpg'; };
-            }
+            // 1. XỬ LÝ TIÊU ĐỀ
+            document.title = content.title || "Chi tiết bài viết";
+            document.getElementById('post-title').innerText = content.title || "Tiêu đề không tồn tại";
 
-            // 2. ĐỔ DỮ LIỆU
-            document.getElementById('post-title').innerText = content.title;
+            // 2. XỬ LÝ ẢNH
+            const imgPath = getCleanPath(content.image);
+            postImg.src = imgPath;
+            postImg.style.display = 'block';
+            postImg.onerror = function() { this.src = 'assets/image/anh1.jpg'; };
+
+            // 3. XỬ LÝ NỘI DUNG (Hỗ trợ cả Markdown)
             if (content.body) {
+                // Nếu CloudCannon lưu dạng Markdown, Marked.parse sẽ giúp hiện đúng xuống dòng, in đậm...
                 document.getElementById('post-body').innerHTML = marked.parse(content.body);
+            } else {
+                document.getElementById('post-body').innerText = "Bài viết này chưa có nội dung.";
             }
 
             document.getElementById('loading').style.display = 'none';
             document.getElementById('post-content-area').style.display = 'block';
 
         } catch (error) {
-            console.error(error);
-            document.getElementById('loading').innerText = "Lỗi: Không tìm thấy nội dung bài viết.";
+            console.error("Lỗi chi tiết:", error);
+            document.getElementById('loading').innerText = "Lỗi: Không thể hiển thị nội dung bài viết này.";
         }
     }
     window.onload = loadPostDetail;
