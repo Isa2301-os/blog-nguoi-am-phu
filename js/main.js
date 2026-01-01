@@ -65,13 +65,8 @@ function displayPosts(page) {
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
-    if (paginatedPosts.length === 0) {
-        container.innerHTML = "<p>Chưa có bài viết nào trong mục này.</p>";
-        return;
-    }
-
     paginatedPosts.forEach(post => {
-        // CẤU TRÚC NÀY LÀ CHÌA KHÓA ĐỂ HIỆN GIAO DIỆN POLAROID
+        // CẤU TRÚC CHUẨN ĐỂ KHỚP VỚI CSS POLAROID
         const cardHtml = `
             <a href="post-detail.html?id=${encodeURIComponent(post.fileName)}" class="photo-card-link">
                 <div class="photo-card">
