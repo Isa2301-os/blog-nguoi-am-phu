@@ -1,9 +1,9 @@
 # 1. Cấu hình đường dẫn chung
 paths:
   uploads: assets/image
-  static: /
+  static: assets # Đổi thành assets để CloudCannon hiểu đúng gốc của file tĩnh
 
-# 2. Cấu hình các file dữ liệu đơn lẻ (Dùng cho Menu, Thông tin web)
+# 2. Cấu hình các file dữ liệu đơn lẻ
 data_config:
   settings:
     path: assets/content/settings.json
@@ -17,20 +17,33 @@ collections_config:
     path: assets/content
     name: Góc Tản Mạn
     icon: auto_stories
-    # Chỉ lấy các file bài viết, loại bỏ file cấu hình hệ thống
+    extension: json
+    output: false
+    
+    # QUAN TRỌNG: Tự động biến tiêu đề thành tên file không dấu, gạch ngang
+    create:
+      path: "assets/content/{slug}.json"
+    slug:
+      from_config: title
+      remove_accents: true # Xóa dấu tiếng Việt
+      case: lowercase      # Viết thường hết
+      
+    # QUAN TRỌNG: Sửa lỗi đường dẫn ảnh khi lưu
+    configuration:
+      uploads:
+        path: assets/image
+        base_url: "" # Ngăn việc chèn dấu / ở đầu đường dẫn
+
     filter:
       exclude:
         - settings.json
         - template-tan-man.json
-        - tieu-de-bai-viet-mau.json # Thêm tên file bài viết mẫu của bạn vào đây
-    extension: json
-    output: false
-    create:
-      path: "assets/content/{slug}.json"
+        - tieu-de-bai-viet-mau.json
+
     schemas:
       default:
         path: assets/content/template-tan-man.json
-    # Tùy chỉnh hiển thị danh sách bài viết trong CloudCannon
+
     config:
       card:
         title: title
@@ -41,7 +54,7 @@ collections_config:
 _inputs:
   title:
     type: text
-    comment: "Tiêu đề bài viết hiển thị trên thẻ card"
+    comment: "Tiêu đề bài viết (Sẽ được tự động dùng làm tên file không dấu)"
   date:
     type: date
   category:
@@ -53,14 +66,13 @@ _inputs:
         - show
   image:
     type: image
-    comment: "Ảnh đại diện cho bài viết"
+    comment: "Chọn ảnh từ assets/image. Code sẽ tự động sửa đường dẫn nếu sai."
   description:
     type: textarea
   body:
     type: markdown
     comment: "Nội dung chính của bài viết"
-
-  # Cấu hình riêng cho Menu trong file settings.json
+    
   menu:
     type: array
     item_options:
