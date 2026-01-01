@@ -199,3 +199,42 @@ h1 {
         font-size: 1em;
     }
 }
+/* Buộc grid hiển thị đúng khung lưới */
+.grid-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+    gap: 40px !important;
+    padding: 40px 20px !important;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Khung Polaroid trắng */
+.photo-card {
+    background: white !important;
+    padding: 15px 15px 35px 15px !important;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+    transition: transform 0.3s ease !important;
+    text-decoration: none;
+    display: block;
+}
+
+.photo-card:hover {
+    transform: rotate(-2deg) scale(1.02);
+}
+
+/* Buộc ảnh phải là hình vuông chuẩn Polaroid */
+.polaroid-frame img {
+    width: 100% !important;
+    aspect-ratio: 1/1 !important;
+    object-fit: cover !important;
+    border: 1px solid #eee;
+}
+
+.caption {
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+    margin-top: 15px;
+    color: #333;
+    font-weight: bold;
+}

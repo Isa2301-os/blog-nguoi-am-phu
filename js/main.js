@@ -14,23 +14,7 @@ function getCleanPath(rawPath) {
     return cleanPath;
 }
 
-// 2. HÀM LOAD MENU ĐỘNG TỪ SETTINGS.JSON
-async function loadMenu() {
-    try {
-        const res = await fetch('assets/content/settings.json');
-        const data = await res.json();
-        const menuContainer = document.getElementById('dynamic-menu');
-        if (!menuContainer || !data.menu) return;
-
-        menuContainer.innerHTML = data.menu.map(item => `
-            <li><a href="${item.link}">${item.name}</a></li>
-        `).join('');
-    } catch (err) {
-        console.error("Không load được menu:", err);
-    }
-}
-
-// 3. LOAD BÀI VIẾT THEO CATEGORY
+// 2. LOAD BÀI VIẾT THEO CATEGORY
 async function loadCategoryPosts(categoryName, page = 1) {
     const repoOwner = "Isa2301-os";
     const repoName = "blog-nguoi-am-phu";
@@ -71,9 +55,9 @@ async function loadCategoryPosts(categoryName, page = 1) {
     }
 }
 
-// 4. HIỂN THỊ POLAROID
+// 3. HIỂN THỊ POLAROID
 function displayPosts(page) {
-    const container = document.querySelector('.grid-container');
+    const container = document.getElementById('post-list-container');
     if (!container) return;
     container.innerHTML = '';
 
@@ -81,7 +65,13 @@ function displayPosts(page) {
     const endIndex = startIndex + postsPerPage;
     const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
+    if (paginatedPosts.length === 0) {
+        container.innerHTML = "<p>Chưa có bài viết nào trong mục này.</p>";
+        return;
+    }
+
     paginatedPosts.forEach(post => {
+        // CẤU TRÚC NÀY LÀ CHÌA KHÓA ĐỂ HIỆN GIAO DIỆN POLAROID
         const cardHtml = `
             <a href="post-detail.html?id=${encodeURIComponent(post.fileName)}" class="photo-card-link">
                 <div class="photo-card">
