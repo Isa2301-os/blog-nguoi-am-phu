@@ -114,6 +114,5 @@ function setupPagination(currentPage) {
 
 // KHỞI CHẠY
 document.addEventListener("DOMContentLoaded", () => {
-    loadMenu(); // Load menu trước
-    loadCategoryPosts('tan-man'); // Load bài viết sau
+loadCategoryPosts('tan-man'); // Load bài viết sau
 });
