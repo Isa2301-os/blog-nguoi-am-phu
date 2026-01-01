@@ -3,122 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đang tải bài viết...</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        .post-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-        }
-        #post-image {
-            width: 100%;
-            max-height: 500px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            display: none; 
-        }
-        .post-title { font-size: 2.2em; color: #222; margin-bottom: 15px; }
-        .post-content { font-size: 1.15em; line-height: 1.8; color: #444; }
-        .post-content img { max-width: 100%; border-radius: 8px; margin: 20px 0; }
-        #loading { text-align: center; padding: 50px; font-style: italic; color: #888; }
-        .back-btn { text-decoration: none; color: #666; font-weight: bold; display: inline-block; margin-bottom: 20px; }
+    <title>Chi Tiết Bài Viết</title>
+    <link rel="stylesheet" href="assets/css/style.css"> <style>
+        .loading { text-align: center; padding: 50px; font-style: italic; color: #888; }
+        .error-box { text-align: center; padding: 50px; color: #d9534f; background: #fdf7f7; border-radius: 8px; margin: 20px; }
+        #post-content img { max-width: 100%; height: auto; border-radius: 8px; }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-    <div class="post-container">
-        <a href="javascript:history.back()" class="back-btn">← Quay lại</a>
-        <div id="loading">Đang tải nội dung...</div>
-        
-        <article id="post-content-area" style="display: none;">
-            <header class="post-header">
-                <img id="post-image" src="" alt="Ảnh bài viết">
-                <h1 id="post-title" class="post-title"></h1>
-            </header>
-            <div id="post-body" class="post-content"></div>
-        </article>
+    <div class="container">
+        <div id="post-detail-container">
+            <div id="loading-state" class="loading">Đang tải nội dung...</div>
+            
+            <div id="post-display" style="display: none;">
+                <a href="index.html" style="text-decoration: none; color: #666;">← Quay lại</a>
+                <h1 id="post-title" style="margin-top: 20px;"></h1>
+                <p id="post-date" style="color: #999; font-size: 0.9em;"></p>
+                <hr>
+                <div id="post-content" style="line-height: 1.6; margin-top: 20px;">
+                    </div>
+            </div>
+
+            <div id="error-state" class="error-box" style="display: none;">
+                <p>Lỗi: Không thể hiển thị nội dung bài viết này.</p>
+                <a href="index.html">Quay về trang chủ</a>
+            </div>
+        </div>
     </div>
 
     <script>
-    // Hàm làm sạch đường dẫn ảnh an toàn
-    function getCleanPath(rawPath) {
-        if (!rawPath) return 'assets/image/anh1.jpg';
-        let path = rawPath;
-        if (path.startsWith('/')) path = path.substring(1);
-        
-        // Sửa lỗi đường dẫn lồng assets/content/assets...
-        if (path.includes('image/')) {
-            const parts = path.split('image/');
-            path = 'assets/image/' + parts[parts.length - 1];
-        }
-        return path;
-    }
-
-    async function loadPostDetail() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get('id');
-
-        if (!postId) {
-            document.getElementById('loading').innerText = "Không tìm thấy ID bài viết.";
-            return;
-        }
-
-        try {
-            const decodedFileName = decodeURIComponent(postId); 
-            const response = await fetch(`./assets/content/${decodedFileName}`);
+        async function loadPostDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const postId = params.get('id');
             
-            if (!response.ok) throw new Error("Không thể tải file bài viết.");
-            
-            // --- PHẦN SỬA LỖI QUAN TRỌNG: Đọc text thay vì r.json() ---
-            const text = await response.text();
-            let content;
-            
+            const displayArea = document.getElementById('post-display');
+            const loadingArea = document.getElementById('loading-state');
+            const errorArea = document.getElementById('error-state');
+
+            if (!postId) {
+                loadingArea.style.display = 'none';
+                errorArea.style.display = 'block';
+                return;
+            }
+
+            // SỬA LỖI 404: Thêm đúng đường dẫn thư mục chứa JSON
+            const url = `assets/content/${decodeURIComponent(postId)}`;
+
             try {
-                // Thử parse bình thường trước
-                content = JSON.parse(text);
-            } catch (jsonErr) {
-                // Nếu dính 2 cấu trúc JSON, lấy phần đầu tiên (từ { đến dấu } đầu tiên)
-                console.warn("Phát hiện file bị dính nội dung thừa, đang tự động sửa lỗi...");
-                const firstObjectMatch = text.substring(0, text.indexOf('}') + 1);
-                content = JSON.parse(firstObjectMatch);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Không tìm thấy file bài viết (404)");
+
+                const text = await response.text();
+                let cleanText = text.trim();
+
+                // BỘ LỌC CHỐNG TRÙNG LẶP JSON: 
+                // Xử lý trường hợp file bị CloudCannon chèn 2 khối {}{...}
+                if (cleanText.includes('}{')) {
+                    cleanText = cleanText.split('}{')[0] + '}';
+                } else if ((cleanText.match(/}/g) || []).length > 1 && !cleanText.startsWith('[')) {
+                    // Trường hợp dính ngoặc nhưng có khoảng trắng ở giữa
+                    cleanText = cleanText.substring(0, cleanText.indexOf('}') + 1);
+                }
+
+                const post = JSON.parse(cleanText);
+
+                // Đổ dữ liệu vào giao diện
+                document.title = post.title || "Chi tiết bài viết";
+                document.getElementById('post-title').innerText = post.title || "Tiêu đề không tên";
+                
+                // Xử lý ngày tháng
+                if (post.date) {
+                    document.getElementById('post-date').innerText = post.date.split('T')[0];
+                }
+
+                // Hiển thị nội dung (Chuyển đổi từ Markdown sang HTML nếu cần, ở đây dùng text/html cơ bản)
+                const contentArea = document.getElementById('post-content');
+                
+                // Nếu có ảnh đại diện bài viết
+                let mainImage = post.image ? `<img src="${post.image}" style="margin-bottom:20px;"><br>` : "";
+                
+                contentArea.innerHTML = mainImage + (post.body || post.description || "Nội dung đang được cập nhật...");
+
+                // Hiển thị kết quả
+                loadingArea.style.display = 'none';
+                displayArea.style.display = 'block';
+
+            } catch (error) {
+                console.error("Lỗi chi tiết:", error);
+                loadingArea.style.display = 'none';
+                errorArea.style.display = 'block';
             }
-            // -------------------------------------------------------
-
-            const postImg = document.getElementById('post-image');
-
-            // 1. XỬ LÝ TIÊU ĐỀ
-            document.title = content.title || "Chi tiết bài viết";
-            document.getElementById('post-title').innerText = content.title || "Tiêu đề không tồn tại";
-
-            // 2. XỬ LÝ ẢNH
-            const imgPath = getCleanPath(content.image);
-            postImg.src = imgPath;
-            postImg.style.display = 'block';
-            postImg.onerror = function() { this.src = 'assets/image/anh1.jpg'; };
-
-            // 3. XỬ LÝ NỘI DUNG (Hỗ trợ cả Markdown)
-            if (content.body) {
-                // Nếu CloudCannon lưu dạng Markdown, Marked.parse sẽ giúp hiện đúng xuống dòng, in đậm...
-                document.getElementById('post-body').innerHTML = marked.parse(content.body);
-            } else {
-                document.getElementById('post-body').innerText = "Bài viết này chưa có nội dung.";
-            }
-
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('post-content-area').style.display = 'block';
-
-        } catch (error) {
-            console.error("Lỗi chi tiết:", error);
-            document.getElementById('loading').innerText = "Lỗi: Không thể hiển thị nội dung bài viết này.";
         }
-    }
-    window.onload = loadPostDetail;
-</script>
+
+        // Khởi chạy khi trang tải xong
+        document.addEventListener('DOMContentLoaded', loadPostDetail);
+    </script>
 </body>
 </html>
