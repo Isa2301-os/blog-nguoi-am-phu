@@ -1,0 +1,9 @@
+{
+  "type": "text_review",
+  "title": "Tiêu đề bài viết review",
+  "date": "2026-01-01",
+  "category": "phim",
+  "image": "assets/image/image-phim/phim1.jpg",
+  "description": "Viết một đoạn mô tả ngắn về phim ở đây để hiển thị ngoài trang danh sách.",
+  "body": "Nội dung chi tiết bài review của bạn. Bạn có thể xuống dòng thoải mái, hệ thống sẽ tự giữ nguyên định dạng."
+}
