@@ -27,9 +27,7 @@ collections_config:
     slug:
       from_config: title
       remove_accents: true
-      case: lowercase
-    # Giữ nguyên các phần filter và schemas cũ của bạn...
-      
+      case: lowercase   
     # QUAN TRỌNG: Sửa lỗi đường dẫn ảnh khi lưu
     configuration:
       uploads:
@@ -51,6 +49,19 @@ collections_config:
         title: title
         image: image
         subtext: date
+# Thêm vào dưới mục collections_config
+  reviews:
+    path: phim/content
+    file_config:
+      name_template: "{slug}.json"
+    create:
+      path: "{slug}.json"
+    configuration:
+      uploads:
+        path: assets/image/image-phim
+    schemas:
+      default:
+        path: phim/content/template-review.json
 
 # 4. Giao diện nhập liệu (Editor UI)
 _inputs:
