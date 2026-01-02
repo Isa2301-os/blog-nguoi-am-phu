@@ -191,3 +191,82 @@ body {
         height: 200px;
     }
 }
+/* --- Styles bổ sung cho trang chi tiết Review --- */
+
+.back-link {
+    display: block;
+    color: #bdc3c7;
+    text-decoration: none;
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+.back-link:hover {
+    color: #e67e22;
+}
+
+/* Bố cục lưới cho các bài viết nhỏ bên trong trang review */
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.post-card {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.post-media img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Tỉ lệ khung hình 16:9 cho Video Youtube */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; 
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.post-info {
+    padding: 20px;
+}
+
+.post-info h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+
+.post-desc {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* Responsive cho trang Review */
+@media (max-width: 768px) {
+    .post-grid {
+        grid-template-columns: 1fr;
+    }
+}
