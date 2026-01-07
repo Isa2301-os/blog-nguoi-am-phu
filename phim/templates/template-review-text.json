@@ -1,10 +1,8 @@
 {
-  "_schema": "default",
-  "type": "text_review",
-  "title": null,
-  "date": "2026-01-01T00:00:00.000Z",
+  "title": "Tiêu đề bài viết mới",
+  "date": "2026-01-01",
   "category": "phim",
-  "image": null,
-  "description": "\n\n",
-  "body": null
+  "image": "",
+  "description": "",
+  "body": ""
 }
