@@ -12,20 +12,47 @@
             <h1>THÀNH NGHỊ-PHIM</h1>
         </header>
         <a href="index.html" class="back-home">← Quay lại trang chủ</a>
-        <div class="blog-container">
-            <article class="blog-item">
-                <div class="blog-image">
-                    <img src="assets/image/image-phim/phim1.jpg" alt="Liên Hoa Lâu">
-                </div>
-                <div class="blog-content">
-                    <h2>Liên Hoa Lâu (Mysterious Lotus Casebook)</h2>
-                    <p class="post-date">Ngày đăng: 01/01/2026</p>
-                    <p class="excerpt">Thành Nghị vai Lý Liên Hoa-Lý Tương Di</p>
-                    <a href="phim/review-lien-hoa-lau.html" class="read-more">Đọc review chi tiết</a>
-                </div>
-            </article>
-            
-            </div>
+   <div class="blog-container" id="movie-list">
+    </div>
+
+  <script>
+    // 1. Danh sách các file JSON của từng bộ phim (Bạn thêm tên file vào đây sau khi tạo trên CloudCannon)
+    const movies = [
+        'lien-hoa-lau.json',
+        'anh-lac-truyen.json' // Ví dụ phim mới
+    ];
+
+    async function displayMovies() {
+        const container = document.getElementById('movie-list');
+        
+        for (const fileName of movies) {
+            try {
+                // Đường dẫn tới thư mục chứa dữ liệu phim bạn tạo trên CloudCannon
+                const response = await fetch(`/assets/data/movies/${fileName}`);
+                const movie = await response.json();
+
+                // Tạo cấu trúc HTML cho mỗi bộ phim
+                const article = document.createElement('article');
+                article.className = 'blog-item';
+                article.innerHTML = `
+                    <div class="blog-image">
+                        <img src="${movie.poster}" alt="${movie.title}">
+                    </div>
+                    <div class="blog-content">
+                        <h2>${movie.title}</h2>
+                        <p class="post-date">Ngày đăng: ${movie.date}</p>
+                        <p class="excerpt">${movie.description}</p>
+                        <a href="review-detail.html?film=${movie.slug}" class="read-more">Đọc review chi tiết</a>
+                    </div>
+                `;
+                container.appendChild(article);
+            } catch (err) {
+                console.error("Không tải được phim:", fileName);
+            }
+        }
+    }
+    window.onload = displayMovies;
+  </script>
     </div>
 </body>
 </html>
