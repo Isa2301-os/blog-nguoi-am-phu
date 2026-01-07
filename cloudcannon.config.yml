@@ -63,6 +63,13 @@ collections_config:
       card:
         title: title
         image: image
+  movies:
+    path: assets/data/movies
+    create:
+      path: "{slug}.json"
+    schemas:
+      default:
+        path: assets/data/movie-template.json
 
 # 4. Giao diện nhập liệu (Editor UI)
 _inputs:
