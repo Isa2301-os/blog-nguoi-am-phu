@@ -65,6 +65,8 @@ collections_config:
         image: image
   movies:
     path: assets/data/movies
+    file_config:
+      name_template: "{slug}.json"
     create:
       path: "{slug}.json"
     schemas:
