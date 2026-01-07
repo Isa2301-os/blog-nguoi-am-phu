@@ -27,7 +27,7 @@
         for (const fileName of movies) {
             try {
                 // Đường dẫn tới thư mục chứa dữ liệu phim bạn tạo trên CloudCannon
-                const response = await fetch(`/blog-nguoi-am-phu/assets/data/movies/${fileName}`);
+                const response = await fetch(`assets/data/movies/${fileName}`);
                 const movie = await response.json();
 
                 // Tạo cấu trúc HTML cho mỗi bộ phim
