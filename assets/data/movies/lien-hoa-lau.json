@@ -6,12 +6,3 @@
   "poster": "/image/image-phim/anh1.jpg",
   "slug": "lien-hoa-lau"
 }
-
-{
-  "_schema": "default",
-  "title": "Tên phim mới",
-  "release_date": "01/01/2026",
-  "cast": "Diễn viên chính",
-  "poster": "/assets/image/image-phim/poster-moi.jpg",
-  "slug": "ten-phim-viet-lien-khong-dau"
-}
