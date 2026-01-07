@@ -34,16 +34,16 @@
                 const article = document.createElement('article');
                 article.className = 'blog-item';
                 article.innerHTML = `
-                    <div class="blog-image">
-                        <img src="${movie.poster}" alt="${movie.title}">
-                    </div>
-                    <div class="blog-content">
-                        <h2>${movie.title}</h2>
-                        <p class="post-date">Ngày đăng: ${movie.date}</p>
-                        <p class="excerpt">${movie.description}</p>
-                        <a href="review-detail.html?film=${movie.slug}" class="read-more">Đọc review chi tiết</a>
-                    </div>
-                `;
+                   <div class="blog-image">
+                       <img src="${movie.poster}" alt="${movie.title}">
+                  </div>
+                  <div class="blog-content">
+                      <h2>${movie.title}</h2>
+                      <p class="post-date">Ngày đăng: ${movie.release_date || 'Chưa cập nhật'}</p>
+                      <p class="excerpt">${movie.cast || 'Đang cập nhật...'}</p>
+                      <a href="review-detail.html?film=${movie.slug}" class="read-more">Đọc review chi tiết</a>
+                  </div>
+            `;
                 container.appendChild(article);
             } catch (err) {
                 console.error("Không tải được phim:", fileName);
