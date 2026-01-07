@@ -73,6 +73,17 @@ collections_config:
 
 # 4. Giao diện nhập liệu (Editor UI)
 _inputs:
+  # Cấu hình cho ảnh phim (Trùng với key "poster" trong file JSON phim)
+  poster:
+    type: image
+    comment: "Chọn ảnh poster cho phim"
+    options:
+      paths:
+        uploads: assets/image/image-phim
+  # Cấu hình cho ngày phát hành phim (Trùng với key "release_date")
+  release_date:
+    type: date
+    comment: "Chọn ngày phát hành phim"
   title:
     type: text
     comment: "Tiêu đề bài viết"
