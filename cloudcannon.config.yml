@@ -43,7 +43,7 @@ collections_config:
 
   # SỬA LỖI TẠI ĐÂY: reviews phải thụt lề vào 2 dấu cách so với collections_config
   reviews:
-    path: phim/templates
+    path: /phim/templates
     file_config:
       name_template: "{slug}.json"
     create:
@@ -58,7 +58,7 @@ collections_config:
         base_url: ""
     schemas:
       default:
-        path: phim/templates/template-review.json
+        path: phim/templates/template-review-text.json
     config:
       card:
         title: title
