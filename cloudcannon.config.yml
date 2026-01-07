@@ -1,7 +1,7 @@
 # 1. Cấu hình đường dẫn chung
 paths:
   uploads: assets/image
-  static: assets # Đổi thành assets để CloudCannon hiểu đúng gốc của file tĩnh
+  static: assets
 
 # 2. Cấu hình các file dữ liệu đơn lẻ
 data_config:
@@ -11,63 +11,64 @@ data_config:
     icon: settings
     description: Thay đổi Menu, Banner và link mạng xã hội
 
-# 3. Cấu hình danh sách bài viết (Góc Tản Mạn)
+# 3. Cấu hình danh sách bài viết
 collections_config:
   posts:
     path: assets/content
-    # THAY ĐỔI: Thêm {uuid} để đảm bảo tên file luôn là duy nhất, 
-    # kể cả khi bạn đặt tiêu đề trùng nhau.
     file_config:
       name_template: "{year}-{month}-{day}-{slug}-{uuid}.json" 
-    
     create:
-      # Đảm bảo đường dẫn tạo mới trùng khớp với template
       path: "{year}-{month}-{day}-{slug}-{uuid}.json"
-    
     slug:
       from_config: title
       remove_accents: true
       case: lowercase   
-    # QUAN TRỌNG: Sửa lỗi đường dẫn ảnh khi lưu
     configuration:
       uploads:
         path: assets/image
-        base_url: "" # Ngăn việc chèn dấu / ở đầu đường dẫn
-
+        base_url: ""
     filter:
       exclude:
         - settings.json
         - template-tan-man.json
         - tieu-de-bai-viet-mau.json
-
     schemas:
       default:
         path: assets/content/template-tan-man.json
-
     config:
       card:
         title: title
         image: image
         subtext: date
-# Thêm vào dưới mục collections_config
+
+  # SỬA LỖI TẠI ĐÂY: reviews phải thụt lề vào 2 dấu cách so với collections_config
   reviews:
-    path: phim/content
+    path: phim/templates
     file_config:
       name_template: "{slug}.json"
     create:
       path: "{slug}.json"
+    slug:
+      from_config: title
+      remove_accents: true
+      case: lowercase
     configuration:
       uploads:
         path: assets/image/image-phim
+        base_url: ""
     schemas:
       default:
-        path: phim/content/template-review.json
+        path: phim/templates/template-review.json
+    config:
+      card:
+        title: title
+        image: image
 
 # 4. Giao diện nhập liệu (Editor UI)
 _inputs:
   title:
     type: text
-    comment: "Tiêu đề bài viết (Sẽ được tự động dùng làm tên file không dấu)"
+    comment: "Tiêu đề bài viết"
   date:
     type: date
   category:
@@ -79,13 +80,12 @@ _inputs:
         - show
   image:
     type: image
-    comment: "Chọn ảnh từ assets/image. Code sẽ tự động sửa đường dẫn nếu sai."
+    comment: "Chọn ảnh từ assets/image."
   description:
     type: textarea
   body:
     type: markdown
     comment: "Nội dung chính của bài viết"
-
   menu:
     type: array
     item_options:
