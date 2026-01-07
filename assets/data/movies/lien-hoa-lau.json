@@ -1,0 +1,17 @@
+{
+  "_schema": "default",
+  "title": "Liên Hoa Lâu",
+  "release_date": "2026-01-01T00:00:00.000Z",
+  "cast": "Thành Nghị/Lý Liên Hoa",
+  "poster": "/image/image-phim/anh1.jpg",
+  "slug": "lien-hoa-lau"
+}
+
+{
+  "_schema": "default",
+  "title": "Tên phim mới",
+  "release_date": "01/01/2026",
+  "cast": "Diễn viên chính",
+  "poster": "/assets/image/image-phim/poster-moi.jpg",
+  "slug": "ten-phim-viet-lien-khong-dau"
+}
