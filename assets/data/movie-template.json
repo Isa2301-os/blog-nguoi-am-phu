@@ -2,6 +2,6 @@
   "title": "Tên phim mới",
   "release_date": "01/01/2026",
   "cast": "Diễn viên chính",
-  "poster": "/assets/image/image-phim/poster-moi.jpg",
+  "poster": "assets/image/image-phim/anh1.jpg",
   "slug": "ten-phim-viet-lien-khong-dau"
 }
